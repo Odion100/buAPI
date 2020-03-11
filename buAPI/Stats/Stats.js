@@ -1,13 +1,13 @@
 const { Service } = require("sht-tasks");
 
 Service.ServerModule("stats", function() {
-  const users = this;
+  const stats = this;
 
-  users.get = (data, cb) => cb(null, { message: "You called user.get method" });
+  stats.get = (data, cb) => cb(null, { message: "You called user.get method" });
 
-  users.put = (data, cb) => cb(null, { message: "You called user.put method" });
+  stats.put = (data, cb) => cb(null, { message: "You called user.put method" });
 
-  users.post = (data, cb) => cb(null, { message: "You called user.post method" });
+  stats.post = (data, cb) => cb(null, { message: "You called user.post method" });
 });
 
 module.exports = Service;
