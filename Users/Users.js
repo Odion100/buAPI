@@ -2,6 +2,10 @@ const { Service } = require("sht-tasks");
 const route = "bu/api/users";
 const port = 4400;
 
+Service.startService({
+  route,
+  port
+});
 Service.ServerModule("users", function() {
   const users = this;
 
@@ -13,3 +17,4 @@ Service.ServerModule("users", function() {
 
   users.activate = (data, cb) => cb(null, { message: "You called user.activate method" });
 });
+module.exports = Service;
