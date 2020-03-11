@@ -1,0 +1,22 @@
+{
+  "name": "buapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Odion100/buAPI.git"
+  },
+  "author": "odion edwards",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Odion100/buAPI/issues"
+  },
+  "homepage": "https://github.com/Odion100/buAPI#readme",
+  "dependencies": {
+    "sht-tasks": "^2.0.0"
+  }
+}
