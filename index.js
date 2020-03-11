@@ -4,8 +4,8 @@ const useREST = true;
 const { Service } = require("sht-tasks");
 const server = Service.Server();
 
-require("./Users/Users");
-require("./Stats/Stats");
-require("./Courts/Courts");
+require("./buAPI/Users/Users");
+require("./buAPI/Stats/Stats");
+require("./buAPI/Courts/Courts");
 
 Service.startService({ route, port, useREST });
