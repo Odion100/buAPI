@@ -1,8 +1,15 @@
+require("dotenv").config();
 const route = "bu/api";
 const port = 4400;
 const useREST = true;
 const { Service } = require("sht-tasks");
+const mongoose = require("mongoose");
 
+console.log("MONGODB_PASSWORD:", process.env.MONGODB_PASSWORD);
+mongoose.connect(
+  `mongodb+srv://Odion:${process.env.MONGODB_PASSWORD}@cluster0-8s7lw.mongodb.net/test?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 require("./buAPI/Users/Users");
 require("./buAPI/Stats/Stats");
 require("./buAPI/Courts/Courts");
