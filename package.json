@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Odion100/buAPI#readme",
   "dependencies": {
+    "mongoose": "^5.9.4",
     "sht-tasks": "^2.0.0"
   },
   "devDependencies": {

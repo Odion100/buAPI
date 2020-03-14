@@ -1,15 +1,6 @@
-const fs = require("fs-extra");
-const moment = require("moment");
-const mongo = require("mongojs");
-const app = require("sht-tasks").app();
-const obj = require("obj-handler");
-const conf = require("../configurations");
-const PORT = 7000;
+const { Service } = require("sht-tasks");
 
-const { ServiceFactory } = require("sht-tasks");
-const FileStore = ServiceFactory();
-
-FileStore.ServerModule("storage", function(server) {
+Service.ServerModule("storage", function(server) {
   const storage = this;
   const StorageHandler = require("./components/StorageHandler")();
 

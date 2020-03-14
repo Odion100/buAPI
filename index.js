@@ -10,5 +10,9 @@ require("./buAPI/NewsFeed/NewsFeed");
 require("./buAPI/ActivityFeed/ActivityFeed");
 require("./buAPI/Notifications/Notifications");
 require("./buAPI/Messanger/Messanger");
+require("./buAPI/Games/Games");
+require("./buAPI/Tournaments/Tournaments");
+require("./buAPI/Broadcasts/Broadcasts");
+require("./buAPI/Filestore/Filestore");
 
 Service.startService({ route, port, useREST });
