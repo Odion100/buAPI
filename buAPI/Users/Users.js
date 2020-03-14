@@ -5,8 +5,8 @@ const { Types } = require("mongoose");
 Service.ServerModule("Users", function() {
   const Users = this;
 
-  Users.get = ({ id, username }, cb) => {
-    usersModel.find({ $or: [{ _id }] });
+  Users.get = ({ id, username, first_name }, cb) => {
+    usersModel.find({ $or: [{ _id }, { username, password }] });
     cb(null, { message: "You called user.get method" });
   };
 
@@ -15,14 +15,10 @@ Service.ServerModule("Users", function() {
 
     user
       .save()
-      .then(newUser => {
-        console.log(results, "\n\n", user);
-        cb(null, { newUser, status: 200, message: "New user created successfully." });
-      })
-      .catch(error => {
-        console.log(error);
-        cb({ error, status: 400, message: "Failed to create new user" });
-      });
+      .then(newUser =>
+        cb(null, { newUser, status: 200, message: "New user created successfully." })
+      )
+      .catch(error => cb({ error, status: 400, message: "Failed to create new user" }));
   };
 
   Users.put = (data, cb) => cb(null, { message: "You called user.put method" });

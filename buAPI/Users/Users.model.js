@@ -6,8 +6,9 @@ module.exports = model(
   "Users",
   Schema({
     _id: Schema.Types.ObjectId,
-    first_name: { type: String, required },
-    last_name: { type: String, required },
+    username: { type: String, required },
+    first_name: String,
+    last_name: String,
     age: String,
     gender: String,
     profile_image: String,
