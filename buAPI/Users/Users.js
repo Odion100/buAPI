@@ -43,19 +43,22 @@ Service.ServerModule("Users", function() {
       .catch(error => cb({ error }));
   };
 
-  Users.archive = async ({ id }, cb) => {
+  const ACCOUNT_STATUSES = ["Active", "Archived"];
+  Users.setAccoutnStatus = async ({ id, status }, cb) => {
+    if (!isValidObjectId(id)) return cb({ message: "Invaild option type: id", status: 400 });
+    if (ACCOUNT_STATUSES.indexOf(status) === -1)
+      return cb({ message: "Invaild option: status", status: 400 });
+
     try {
       const user = await usersModel.findById(id);
       if (!user) return cb({ message: "Users resource not found", status: 404 });
-      user.account_status = "Archived";
+      user.account_status = status;
       const results = await user.save();
       cb(null, results);
     } catch (error) {
       cb({ error });
     }
   };
-
-  Users.activate = (data, cb) => cb(null, { message: "You called user.activate method" });
 });
 
 module.exports = Service;
