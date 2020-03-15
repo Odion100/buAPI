@@ -19,8 +19,9 @@
   "homepage": "https://github.com/Odion100/buAPI#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "moment": "^2.24.0",
     "mongoose": "^5.9.4",
-    "sht-tasks": "^2.0.0"
+    "sht-tasks": "^2.0.3"
   },
   "devDependencies": {
     "chai": "^4.2.0"
