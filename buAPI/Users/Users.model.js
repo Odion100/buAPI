@@ -2,6 +2,7 @@ const { Schema, model } = require("mongoose");
 const moment = require("moment");
 const required = true;
 const unique = true;
+const CONSTANTS = ["email", "password", "created_date", "_id"];
 
 module.exports = model(
   "Users",
@@ -18,5 +19,15 @@ module.exports = model(
     created_date: { type: Date, default: moment().toJSON() },
     main_zipcode: String,
     tag: String
+  }).pre("findOneAndUpdate", function(next) {
+    const update = this.getUpdate();
+    if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
+
+    CONSTANTS.forEach(field => {
+      if (update.$set[field]) {
+        throw `${field} field modification not allowed`;
+      }
+    });
+    next();
   })
 );

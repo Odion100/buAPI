@@ -1,23 +1,27 @@
 const { Service } = require("sht-tasks");
 const usersModel = require("./Users.model");
 const { Types, isValidObjectId } = require("mongoose");
+
 Service.ServerModule("Users", function() {
   const Users = this;
 
   Users.get = ({ id, email, password }, cb) => {
     const queries = [];
-    console.log(id, isValidObjectId(id));
+
     if (email && password) queries.push({ email, password });
     if (isValidObjectId(id)) queries.push({ _id: id });
 
     if (queries.length === 0)
-      cb(null, { message: "Users resource not found item found", status: 404 });
+      cb(null, {
+        message: "Invalid request options. Expecting id or email and password",
+        status: 400
+      });
 
-    console.log("queries:", queries);
     usersModel
       .findOne({ $and: queries })
       .then(user => {
-        cb(null, { user, status: 200 });
+        if (user) cb(null, { user, status: 200 });
+        else cb(null, { message: "Users resource not found item found", status: 404 });
       })
       .catch(error => {
         cb(error);
@@ -34,7 +38,14 @@ Service.ServerModule("Users", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new user" }));
   };
 
-  Users.put = (data, cb) => cb(null, { message: "You called user.put method" });
+  Users.updateFields = ({ id, updatedFields }, cb) => {
+    usersModel
+      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
+      .then(updatedUser => cb(null, { updatedUser, status: 200 }))
+      .catch(error => {
+        cb({ error });
+      });
+  };
 
   Users.archive = (data, cb) => cb(null, { message: "You called user.archive method" });
 
