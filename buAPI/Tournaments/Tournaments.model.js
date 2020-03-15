@@ -2,32 +2,27 @@ const { Schema, model } = require("mongoose");
 const moment = require("moment");
 const required = true;
 const unique = true;
-const CONSTANTS = ["email", "password", "created_date", "_id", "account_status"];
+const CONSTANTS = ["created_date", "_id", "status", "root_admin"];
 
 module.exports = model(
-  "Users",
+  "Tournaments",
   Schema({
     _id: Schema.Types.ObjectId,
-    first_name: String,
-    last_name: String,
-    age: String,
-    gender: String,
     profile_image: String,
     banner_image: String,
-    email: { type: String, required, unique },
-    password: { type: String, required },
-    created_date: { type: Date, default: moment().toJSON() },
+    name: { type: String, required },
+    root_admin: { type: Schema.Types.ObjectId, required },
+    secondary_admins: [{ type: Schema.Types.ObjectId, required }],
     primary_zipcodes: [String],
-    tag: String,
-    account_status: { type: String, default: "Active" }
+    teams: [{ type: Schema.Types.ObjectId }],
+    created_date: Date,
+    status: String
   }).pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();
     if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
 
     CONSTANTS.forEach(field => {
-      if (update.$set[field]) {
-        throw `${field} field modification not allowed`;
-      }
+      if (update.$set[field]) throw `${field} field modification not allowed`;
     });
     next();
   })
