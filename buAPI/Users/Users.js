@@ -5,7 +5,7 @@ const { Types, isValidObjectId } = require("mongoose");
 Service.ServerModule("Users", function() {
   const Users = this;
 
-  Users.get = ({ id, email, password }, cb) => {
+  Users.get = ({ id, email, password, status }, cb) => {
     const queries = [];
 
     if (email && password) queries.push({ email, password });
@@ -16,16 +16,14 @@ Service.ServerModule("Users", function() {
         message: "Invalid request options. Expecting id or email and password",
         status: 400
       });
-
+    else queries.push({ account_status: status || "Active" });
     usersModel
       .findOne({ $and: queries })
       .then(user => {
         if (user) cb(null, { user, status: 200 });
-        else cb(null, { message: "Users resource not found item found", status: 404 });
+        else cb(null, { message: "Users resource not found", status: 404 });
       })
-      .catch(error => {
-        cb(error);
-      });
+      .catch(error => cb({ error }));
   };
 
   Users.add = (data, cb) => {
@@ -42,12 +40,20 @@ Service.ServerModule("Users", function() {
     usersModel
       .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
       .then(updatedUser => cb(null, { updatedUser, status: 200 }))
-      .catch(error => {
-        cb({ error });
-      });
+      .catch(error => cb({ error }));
   };
 
-  Users.archive = (data, cb) => cb(null, { message: "You called user.archive method" });
+  Users.archive = async ({ id }, cb) => {
+    try {
+      const user = await usersModel.findById(id);
+      if (!user) return cb({ message: "Users resource not found", status: 404 });
+      user.account_status = "Archived";
+      const results = await user.save();
+      cb(null, results);
+    } catch (error) {
+      cb({ error });
+    }
+  };
 
   Users.activate = (data, cb) => cb(null, { message: "You called user.activate method" });
 });
