@@ -7,24 +7,24 @@ Service.ServerModule("Users", function() {
 
   Users.get = ({ id, email, password, status }, cb) => {
     const queries = [];
-
+    console.log(id, isValidObjectId(id));
     if (email && password) queries.push({ email, password });
-    if (isValidObjectId(id)) queries.push({ _id: id });
+    if (id && isValidObjectId(id)) queries.push({ _id: id });
 
     if (queries.length === 0)
-      cb({
+      return cb({
         message: "Invalid request options. Expecting id or email and password",
         status: 400
       });
     else queries.push({ account_status: status || "Active" });
-
+    console.log(queries);
     usersModel
       .findOne({ $and: queries })
       .then(user => {
         if (user) cb({ user, status: 200 });
         else cb(null, { message: "Users resource not found", status: 404 });
       })
-      .catch(error => cb({ error }));
+      .catch(error => cb(error));
   };
 
   Users.add = (data, cb) => {
@@ -45,7 +45,7 @@ Service.ServerModule("Users", function() {
   };
 
   Users.setAccoutnStatus = async ({ id, status }, cb) => {
-    if (!isValidObjectId(id)) return cb({ message: "Invaild id type:", status: 400 });
+    if (!id || !isValidObjectId(id)) return cb({ message: "Invaild id type:", status: 400 });
 
     try {
       const user = await usersModel.findById(id);
