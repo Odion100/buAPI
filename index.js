@@ -5,11 +5,14 @@ const useREST = true;
 const { Service } = require("sht-tasks");
 const mongoose = require("mongoose");
 
-console.log("MONGODB_PASSWORD:", process.env.MONGODB_PASSWORD);
-mongoose.connect(
-  `mongodb+srv://Odion:${process.env.MONGODB_PASSWORD}@cluster0-8s7lw.mongodb.net/test?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+mongoose
+  .connect(
+    `mongodb+srv://Odion:${process.env.MONGODB_PASSWORD}@cluster0-8s7lw.mongodb.net/test?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
+  )
+  .then(data => console.log("mongodb connected:-->"))
+  .catch(err => console.log("mongodb connection failed:-->", err.massage));
+
 require("./buAPI/Users/Users");
 require("./buAPI/Stats/Stats");
 require("./buAPI/Courts/Courts");

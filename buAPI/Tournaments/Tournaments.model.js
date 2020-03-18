@@ -16,7 +16,12 @@ module.exports = model(
     primary_zipcodes: [String],
     teams: [{ type: Schema.Types.ObjectId }],
     created_date: Date,
-    status: String
+    status: String,
+    team_sizes: Number,
+    court_rules: String,
+    description: String,
+    start_date: Date,
+    end_date: Date
   }).pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();
     if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
