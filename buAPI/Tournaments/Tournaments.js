@@ -3,30 +3,67 @@ const tournamentsModel = require("./Tournaments.model");
 Service.ServerModule("Tournaments", function() {
   const Tournaments = this;
 
-  Tournaments.get = (data, cb) => {
+  Tournaments.get = (
+    {
+      id,
+      name,
+      team,
+      root_admin,
+      secondary_admin,
+      zip_code,
+      start_date,
+      end_date,
+      status,
+      rules,
+      description
+    },
+    cb
+  ) => {
     const queries = [];
 
-    if (isValidObjectId(id)) queries.push({ _id: id });
+    if (id && isValidObjectId(id)) queries.push({ _id: id });
+    else {
+      if (name) queries.push({ name });
+      if (team) queries.push({ teams: team });
+      if (root_admin) queries.push({ root_admin });
+      if (secondary_admin) queries.push({ secondary_admins: secondary_admin });
+      if (zip_code) queries.push({ primary_zipcodes: zip_code });
+      if (rules) queries.push({ rules });
+      if (start_date && end_date) {
+        //create date range query
+      }
+      if (description) {
+        //create regex query
+      }
+    }
 
     if (queries.length === 0)
       cb(null, {
-        message: "Invalid request options. Expecting id or email and password",
+        message: "Invalid request options",
         status: 400
       });
-    else queries.push({ account_status: status || "Active" });
+
+    if (status !== "all")
+      queries.push(status ? { status } : { $or: [{ status: "Active" }, { status: "Pending" }] });
 
     tournamentsModel
       .find({ $and: queries })
-      .then(user => {
-        if (user) cb(null, { user, status: 200 });
-        else cb(null, { message: "Users resource not found", status: 404 });
+      .then(tornament => {
+        if (tornament) cb(null, { tornament, status: 200 });
+        else cb(null, { message: "tournaments resource not found", status: 404 });
       })
       .catch(error => cb({ error }));
   };
 
-  Tournaments.put = (data, cb) => cb(null, { message: "You called Tournaments.put method" });
-
-  Tournaments.post = (data, cb) => cb(null, { message: "You called Tournaments.post method" });
+  Tournaments.add = (data, cb) => {
+    const tournament = new tournamentsModel({ _id: Types.ObjectId(), ...data });
+    tournament
+      .save()
+      .then(newTournament =>
+        cb(null, { newTournament, status: 200, message: "New tournament created successfully." })
+      )
+      .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
+  };
 
   Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
 
@@ -35,6 +72,15 @@ Service.ServerModule("Tournaments", function() {
 
   Tournaments.createInvite = (data, cb) =>
     cb(null, { message: "You called Tournaments.createInvite method" });
+
+  Tournaments.addTeam = (data, cb) => {};
+
+  Tournaments.updateFields = ({ id, updatedFields }, cb) => {
+    tornamentsModel
+      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
+      .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
+      .catch(error => cb({ error }));
+  };
 });
 
 module.exports = Service;

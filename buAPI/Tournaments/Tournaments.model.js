@@ -2,7 +2,15 @@ const { Schema, model } = require("mongoose");
 const moment = require("moment");
 const required = true;
 const unique = true;
-const CONSTANTS = ["created_date", "_id", "status", "root_admin"];
+const CONSTANTS = [
+  "created_date",
+  "_id",
+  "status",
+  "root_admin",
+  "teams",
+  "secondary_admins",
+  "court_rules"
+];
 
 module.exports = model(
   "Tournaments",
@@ -12,15 +20,15 @@ module.exports = model(
     banner_image: String,
     name: { type: String, required },
     root_admin: { type: Schema.Types.ObjectId, required },
-    secondary_admins: [{ type: Schema.Types.ObjectId, required }],
+    secondary_admins: [{ type: Schema.Types.ObjectId }],
     primary_zipcodes: [String],
     teams: [{ type: Schema.Types.ObjectId }],
-    created_date: Date,
-    status: String,
-    team_sizes: Number,
-    court_rules: String,
+    team_limit: Number,
+    created_date: { type: Date, defalut: moment().toJSON() },
+    status: { type: String, defalut: "pending" },
+    rules: { type: Schema.Types.ObjectId, required },
     description: String,
-    start_date: Date,
+    start_date: { type: Date, require },
     end_date: Date
   }).pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();

@@ -17,7 +17,7 @@ Service.ServerModule("Users", function() {
         status: 400
       });
     else queries.push({ account_status: status || "Active" });
-    console.log(queries);
+
     usersModel
       .findOne({ $and: queries })
       .then(user => {
@@ -28,13 +28,19 @@ Service.ServerModule("Users", function() {
   };
 
   Users.add = (data, cb) => {
+    console.log("Request recieved");
     const user = new usersModel({ _id: Types.ObjectId(), ...data });
+    console.log(user);
     user
       .save()
-      .then(newUser =>
-        cb(null, { newUser, status: 200, message: "New user created successfully." })
-      )
-      .catch(error => cb({ error, status: 400, message: "Failed to create new user" }));
+      .then(newUser => {
+        console.log("saved succesfully-----<<>----");
+        cb(null, { newUser, status: 200, message: "New user created successfully." });
+      })
+      .catch(error => {
+        console.log("a faild attempted womp womp");
+        cb({ error, status: 400, message: "Failed to create new user" });
+      });
   };
 
   Users.updateFields = ({ id, updatedFields }, cb) => {
