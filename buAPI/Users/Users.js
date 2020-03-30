@@ -52,8 +52,8 @@ Service.ServerModule("Users", function() {
       const user = await usersModel.findById(id);
       if (!user) return cb({ message: "Users resource not found", status: 404 });
       user.account_status = status;
-      const results = await user.save();
-      cb(null, results);
+      const updatedUser = await user.save();
+      cb(null, { status: 200, updatedUser });
     } catch (error) {
       cb({ error });
     }

@@ -11,7 +11,7 @@ module.exports = model(
     _id: Schema.Types.ObjectId,
     first_name: String,
     last_name: String,
-    age: String,
+    age: Number,
     gender: String,
     profile_image: String,
     banner_image: String,
