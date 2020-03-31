@@ -9,13 +9,21 @@ const CONSTANTS = [
   "root_admin",
   "teams",
   "secondary_admins",
-  "court_rules"
+  "name",
+  "uid"
 ];
 
 module.exports = model(
   "Tournaments",
   Schema({
     _id: Schema.Types.ObjectId,
+    uid: {
+      type: String,
+      default: function() {
+        return `${this.root_admin}-${this.name}`;
+      },
+      unique
+    },
     profile_image: String,
     banner_image: String,
     name: { type: String, required },
@@ -24,11 +32,19 @@ module.exports = model(
     primary_zipcodes: [String],
     teams: [{ type: Schema.Types.ObjectId }],
     team_limit: Number,
-    created_date: { type: Date, defalut: moment().toJSON() },
-    status: { type: String, defalut: "pending" },
-    rules: { type: Schema.Types.ObjectId, required },
+    created_date: { type: Date, default: moment().toJSON() },
+    status: {
+      type: String,
+      default: "unsubmitted",
+      enum: ["unsubmitted", "submitted", "in progress", "canceled", "paused", "completed"]
+    },
+    type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"] },
+    rules: [String],
+    refereed: { type: Boolean, default: false },
+    rounds: { type: Number, enum: [1, , 2, 3, 4], default: 1 },
+    round_clock: { type: Number, default: 0 },
     description: String,
-    start_date: { type: Date, require },
+    start_date: Date,
     end_date: Date
   }).pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();

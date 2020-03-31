@@ -1,5 +1,7 @@
 const { Service } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
+const { Types, isValidObjectId } = require("mongoose");
+
 Service.ServerModule("Tournaments", function() {
   const Tournaments = this;
 
@@ -13,8 +15,10 @@ Service.ServerModule("Tournaments", function() {
       zip_code,
       start_date,
       end_date,
+      created_date,
+      refereed,
       status,
-      rules,
+      type,
       description
     },
     cb
@@ -23,17 +27,25 @@ Service.ServerModule("Tournaments", function() {
 
     if (id && isValidObjectId(id)) queries.push({ _id: id });
     else {
-      if (name) queries.push({ name });
       if (team) queries.push({ teams: team });
       if (root_admin) queries.push({ root_admin });
       if (secondary_admin) queries.push({ secondary_admins: secondary_admin });
       if (zip_code) queries.push({ primary_zipcodes: zip_code });
-      if (rules) queries.push({ rules });
+      if (type) queries.push({ type });
+
       if (start_date && end_date) {
         //create date range query
+      } else {
+        if (start_date) console.log(start_date);
+        if (end_date) console.log(end_date);
       }
+
       if (description) {
         //create regex query
+      }
+      if (name) {
+        //create regex query
+        queries.push({ name });
       }
     }
 
@@ -43,13 +55,12 @@ Service.ServerModule("Tournaments", function() {
         status: 400
       });
 
-    if (status !== "all")
-      queries.push(status ? { status } : { $or: [{ status: "Active" }, { status: "Pending" }] });
-
+    if (status && status !== "all") queries.push({ status });
+    console.log(queries);
     tournamentsModel
       .find({ $and: queries })
-      .then(tornament => {
-        if (tornament) cb(null, { tornament, status: 200 });
+      .then(tornaments => {
+        if (tornaments) cb(null, { tornaments, status: 200 });
         else cb(null, { message: "tournaments resource not found", status: 404 });
       })
       .catch(error => cb({ error }));
