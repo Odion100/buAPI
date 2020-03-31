@@ -1,6 +1,7 @@
 const { Service } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 const { Types, isValidObjectId } = require("mongoose");
+const moment = require("moment");
 
 Service.ServerModule("Tournaments", function() {
   const Tournaments = this;
@@ -12,10 +13,11 @@ Service.ServerModule("Tournaments", function() {
       team,
       root_admin,
       secondary_admin,
-      zip_code,
+      zipcode,
       start_date,
-      end_date,
+      to_start_date,
       created_date,
+      to_created_date,
       refereed,
       status,
       type,
@@ -30,23 +32,26 @@ Service.ServerModule("Tournaments", function() {
       if (team) queries.push({ teams: team });
       if (root_admin) queries.push({ root_admin });
       if (secondary_admin) queries.push({ secondary_admins: secondary_admin });
-      if (zip_code) queries.push({ primary_zipcodes: zip_code });
+      if (zipcode) queries.push({ primary_zipcodes: zipcode });
       if (type) queries.push({ type });
 
-      if (start_date && end_date) {
-        //create date range query
-      } else {
-        if (start_date) console.log(start_date);
-        if (end_date) console.log(end_date);
+      if (start_date && moment(start_date).isValid()) {
+        queries.push({ start_date: { $gte: moment(start_date).toJSON() } });
+        if (to_start_date) queries.push({ start_date: { $lte: moment(to_start_date).toJSON() } });
       }
 
-      if (description) {
-        //create regex query
+      if (created_date && moment(created_date).isValid()) {
+        queries.push({ created_date: { $gte: moment(created_date).toJSON() } });
+        if (to_created_date)
+          queries.push({ created_date: { $lte: moment(to_created_date).toJSON() } });
       }
-      if (name) {
-        //create regex query
-        queries.push({ name });
-      }
+
+      if (description)
+        queries.push({ description: { $regex: new RegExp(`\\b${description}`, "gi") } });
+
+      if (name) queries.push({ name: { $regex: new RegExp(`\\b${name}`, "gi") } });
+
+      if (typeof refereed === "boolean") queries.push({ refereed });
     }
 
     if (queries.length === 0)
@@ -56,7 +61,7 @@ Service.ServerModule("Tournaments", function() {
       });
 
     if (status && status !== "all") queries.push({ status });
-    console.log(queries);
+    //console.log(queries);
     tournamentsModel
       .find({ $and: queries })
       .then(tornaments => {
@@ -76,6 +81,13 @@ Service.ServerModule("Tournaments", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
+  Tournaments.updateFields = ({ id, updatedFields }, cb) => {
+    tornamentsModel
+      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
+      .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
+      .catch(error => cb({ error }));
+  };
+
   Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
 
   Tournaments.reactivate = (data, cb) =>
@@ -84,14 +96,8 @@ Service.ServerModule("Tournaments", function() {
   Tournaments.createInvite = (data, cb) =>
     cb(null, { message: "You called Tournaments.createInvite method" });
 
-  Tournaments.addTeam = (data, cb) => {};
-
-  Tournaments.updateFields = ({ id, updatedFields }, cb) => {
-    tornamentsModel
-      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
-      .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
-      .catch(error => cb({ error }));
-  };
+  Tournaments.publish = (data, cb) =>
+    cb(null, { message: "You called Tournaments.publish method" });
 });
 
 module.exports = Service;
