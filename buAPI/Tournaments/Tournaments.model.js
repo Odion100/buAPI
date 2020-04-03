@@ -12,6 +12,7 @@ const CONSTANTS = [
   "name",
   "uid"
 ];
+const immutable = doc => this.status !== "unpublished";
 
 module.exports = model(
   "Tournaments",
@@ -22,7 +23,8 @@ module.exports = model(
       default: function() {
         return `${this.root_admin}-${this.name}`;
       },
-      unique
+      unique,
+      immutable: true
     },
     profile_image: String,
     banner_image: String,
@@ -30,26 +32,25 @@ module.exports = model(
     root_admin: { type: Schema.Types.ObjectId, required },
     secondary_admins: [{ type: Schema.Types.ObjectId }],
     primary_zipcodes: [String],
-    teams: [{ type: Schema.Types.ObjectId }],
-    team_limit: Number,
+    description: String,
     created_date: { type: Date, default: moment().toJSON() },
     status: {
       type: String,
       default: "unpublished",
       enum: ["unpublished", "published", "in progress", "canceled", "paused", "completed"]
     },
-    type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"] },
-    rules: [String],
-    refereed: { type: Boolean, default: false },
-    rounds: { type: Number, enum: [1, , 2, 3, 4], default: 1 },
-    round_clock: { type: Number, default: 0 },
-    description: String,
-    start_date: Date,
-    end_date: Date
+    teams: [{ type: Schema.Types.ObjectId, immutable }],
+    team_limit: { type: Number, immutable },
+    type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"], immutable },
+    rules: { type: [String], immutable },
+    refereed: { type: Boolean, default: false, immutable },
+    rounds: { type: Number, enum: [1, 2, 3, 4], default: 1, immutable },
+    round_clock: { type: Number, default: 0, immutable },
+    start_date: { type: Date, immutable },
+    end_date: { type: Date, immutable }
   }).pre("findOneAndUpdate", function(next) {
     const update = this.getUpdate();
     if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
-
     CONSTANTS.forEach(field => {
       if (update.$set[field]) throw `${field} field modification not allowed`;
     });

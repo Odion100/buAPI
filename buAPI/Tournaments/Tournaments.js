@@ -64,8 +64,8 @@ Service.ServerModule("Tournaments", function() {
     //console.log(queries);
     tournamentsModel
       .find({ $and: queries })
-      .then(tornaments => {
-        if (tornaments) cb(null, { tornaments, status: 200 });
+      .then(tournaments => {
+        if (tournaments) cb(null, { tournaments, status: 200 });
         else cb(null, { message: "tournaments resource not found", status: 404 });
       })
       .catch(error => cb({ error }));
@@ -81,8 +81,14 @@ Service.ServerModule("Tournaments", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
-  Tournaments.updateFields = ({ id, updatedFields }, cb) => {
-    tornamentsModel
+  Tournaments.updateFields = async ({ id, updatedFields }, cb) => {
+    const tournament = await tournamentsModel.findById(id);
+    if (tournament.status === "in progress")
+      return cb({
+        message: "Cannot update tournament while tournament is in progress",
+        status: 403
+      });
+    tournamentsModel
       .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
       .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
       .catch(error => cb({ error }));
