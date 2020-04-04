@@ -81,18 +81,11 @@ Service.ServerModule("Tournaments", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
-  Tournaments.updateFields = async ({ id, updatedFields }, cb) => {
-    const tournament = await tournamentsModel.findById(id);
-    if (tournament.status === "in progress")
-      return cb({
-        message: "Cannot update tournament while tournament is in progress",
-        status: 403
-      });
+  Tournaments.updateFields = async ({ id, updatedFields }, cb) =>
     tournamentsModel
-      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true })
+      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true, useFindAndModify: false })
       .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
       .catch(error => cb({ error }));
-  };
 
   Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
 

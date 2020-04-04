@@ -40,7 +40,7 @@ Service.ServerModule("Users", function() {
     if (!id || !fields)
       return cb({ status: 404, message: "Invalid options:Expecting: id, fields" });
     usersModel
-      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: true })
+      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
       .then(updatedUser => cb(null, { updatedUser, status: 200 }))
       .catch(error => cb({ error }));
   };
