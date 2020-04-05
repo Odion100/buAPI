@@ -26,15 +26,13 @@ Service.ServerModule("Users", function() {
       .catch(error => cb(error));
   };
 
-  Users.add = (data, cb) => {
-    const user = new usersModel({ _id: Types.ObjectId(), ...data });
-    user
+  Users.add = (data, cb) =>
+    usersModel({ _id: Types.ObjectId(), ...data })
       .save()
       .then(newUser =>
         cb(null, { newUser, status: 200, message: "New user created successfully." })
       )
       .catch(error => cb({ error, status: 400, message: "Failed to create new user" }));
-  };
 
   Users.updateFields = ({ id, fields }, cb) => {
     if (!id || !fields)

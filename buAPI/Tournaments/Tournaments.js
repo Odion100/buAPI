@@ -72,8 +72,7 @@ Service.ServerModule("Tournaments", function() {
   };
 
   Tournaments.add = (data, cb) => {
-    const tournament = new tournamentsModel({ _id: Types.ObjectId(), ...data });
-    tournament
+    new tournamentsModel({ _id: Types.ObjectId(), ...data })
       .save()
       .then(newTournament =>
         cb(null, { newTournament, status: 200, message: "New tournament created successfully." })
@@ -81,11 +80,14 @@ Service.ServerModule("Tournaments", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
-  Tournaments.updateFields = async ({ id, fields }, cb) =>
+  Tournaments.updateFields = async ({ id, fields }, cb) => {
+    if (!id || !fields)
+      return cb({ status: 404, message: "Invalid options:Expecting: id, fields" });
     tournamentsModel
       .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
       .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
       .catch(error => cb({ error }));
+  };
 
   Tournaments.publish = ({ id }, cb) => {
     cb(null, { message: "You called Tournaments.publish method" });
