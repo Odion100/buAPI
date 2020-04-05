@@ -36,7 +36,7 @@ Service.ServerModule("Users", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new user" }));
   };
 
-  Users.update = ({ id, fields }, cb) => {
+  Users.updateFields = ({ id, fields }, cb) => {
     if (!id || !fields)
       return cb({ status: 404, message: "Invalid options:Expecting: id, fields" });
     usersModel

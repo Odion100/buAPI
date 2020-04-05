@@ -1,8 +1,10 @@
 const { Schema, model } = require("mongoose");
 const moment = require("moment");
+const queryValidations = require("../_utils/queryValidator");
+const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const unique = true;
-const CONSTANTS = ["created_date", "status", "root_admin", "teams", "name", "uid"];
+const immutable = true;
 const validate = {
   validator: function() {
     return this.status === "unpublished";
@@ -13,7 +15,7 @@ const validate = {
 module.exports = model(
   "Tournaments",
   Schema({
-    //Constants
+    //Immutables
     _id: Schema.Types.ObjectId,
     uid: {
       type: String,
@@ -21,11 +23,14 @@ module.exports = model(
         return `${this.root_admin}-${this.name}`;
       },
       unique,
-      immutable: true
+      immutable
     },
     name: { type: String, required },
-    root_admin: { type: Schema.Types.ObjectId, required },
-    created_date: { type: Date, default: moment().toJSON() },
+    root_admin: { type: Schema.Types.ObjectId, required, immutable },
+    created_date: { type: Date, default: moment().toJSON(), immutable },
+
+    //Constants
+    teams: [{ type: Schema.Types.ObjectId, validate }],
     status: {
       type: String,
       default: "unpublished",
@@ -39,10 +44,7 @@ module.exports = model(
     primary_zipcodes: [String],
     description: String,
 
-    //validate and Constant
-    teams: [{ type: Schema.Types.ObjectId, validate }],
-
-    //validates and Non Constant
+    //validate status and Non Constant
     team_limit: { type: Number, validate },
     type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"], validate },
     rules: { type: [String], validate },
@@ -51,12 +53,7 @@ module.exports = model(
     clock: { type: Number, default: 0, validate },
     start_date: { type: Date, validate },
     end_date: { type: Date, validate }
-  }).pre("findOneAndUpdate", function(next) {
-    const update = this.getUpdate();
-    if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
-    CONSTANTS.forEach(field => {
-      if (update.$set[field]) throw `${field} field modification not allowed`;
-    });
-    next();
   })
+    .pre("findOne", queryValidations)
+    .pre("findOneAndUpdate", constantsValidator(["status", "teams", "name"]))
 );

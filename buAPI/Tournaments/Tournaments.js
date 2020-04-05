@@ -1,6 +1,6 @@
 const { Service } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
-const { Types, isValidObjectId } = require("mongoose");
+const { Types } = require("mongoose");
 const moment = require("moment");
 
 Service.ServerModule("Tournaments", function() {
@@ -27,7 +27,7 @@ Service.ServerModule("Tournaments", function() {
   ) => {
     const queries = [];
 
-    if (id && isValidObjectId(id)) queries.push({ _id: id });
+    if (id) queries.push({ _id: id });
     else {
       if (team) queries.push({ teams: team });
       if (root_admin) queries.push({ root_admin });
@@ -81,11 +81,15 @@ Service.ServerModule("Tournaments", function() {
       .catch(error => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
-  Tournaments.updateFields = async ({ id, updatedFields }, cb) =>
+  Tournaments.updateFields = async ({ id, fields }, cb) =>
     tournamentsModel
-      .findByIdAndUpdate(id, { $set: updatedFields }, { new: true, useFindAndModify: false })
+      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
       .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
       .catch(error => cb({ error }));
+
+  Tournaments.publish = ({ id }, cb) => {
+    cb(null, { message: "You called Tournaments.publish method" });
+  };
 
   Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
 
@@ -94,9 +98,6 @@ Service.ServerModule("Tournaments", function() {
 
   Tournaments.createInvite = (data, cb) =>
     cb(null, { message: "You called Tournaments.createInvite method" });
-
-  Tournaments.publish = (data, cb) =>
-    cb(null, { message: "You called Tournaments.publish method" });
 });
 
 module.exports = Service;
