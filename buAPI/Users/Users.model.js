@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const moment = require("moment");
-const queryValidations = require("../_utils/queryValidations");
-const CONSTANT_FIELDS = ["email", "password", "created_date", "_id", "account_status"];
+const queryValidations = require("../_utils/queryValidator");
+const constantsValidator = require("../_utils/constantsValidator");
 const lowercase = true;
 const required = true;
 const unique = true;
@@ -24,15 +24,8 @@ module.exports = model(
     account_status: { type: String, default: "active", enum: ["active", "archived"], lowercase }
   })
     .pre("findOne", queryValidations)
-    .pre("findOneAndUpdate", function(next) {
-      const update = this.getUpdate();
-      if (!update.$set) throw { message: "Internal Error: Expected update to use $set" };
-
-      CONSTANT_FIELDS.forEach(field => {
-        if (update.$set[field]) {
-          throw { message: `${field} field modification not allowed`, status: 403 };
-        }
-      });
-      next();
-    })
+    .pre(
+      "findOneAndUpdate",
+      constantsValidator(["email", "password", "created_date", "_id", "account_status"])
+    )
 );
