@@ -1,6 +1,6 @@
 const { Service } = require("sht-tasks");
 const usersModel = require("./Users.model");
-const { Types, isValidObjectId } = require("mongoose");
+const { Types } = require("mongoose");
 
 Service.ServerModule("Users", function() {
   const Users = this;
@@ -8,7 +8,7 @@ Service.ServerModule("Users", function() {
   Users.get = ({ id, email, password, status }, cb) => {
     const queries = [];
     if (email && password) queries.push({ email, password });
-    if (id && isValidObjectId(id)) queries.push({ _id: id });
+    if (id) queries.push({ _id: id });
 
     if (queries.length === 0)
       return cb({
@@ -42,12 +42,10 @@ Service.ServerModule("Users", function() {
     usersModel
       .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
       .then(updatedUser => cb(null, { updatedUser, status: 200 }))
-      .catch(error => cb({ error }));
+      .catch(error => cb(error));
   };
 
   Users.setAccountStatus = async ({ id, status }, cb) => {
-    if (!id || !isValidObjectId(id)) return cb({ message: "Invaild id type:", status: 400 });
-
     try {
       const user = await usersModel.findById(id);
       if (!user) return cb({ message: "Users resource not found", status: 404 });
@@ -55,7 +53,7 @@ Service.ServerModule("Users", function() {
       const updatedUser = await user.save();
       cb(null, { status: 200, updatedUser });
     } catch (error) {
-      cb({ error });
+      cb(error);
     }
   };
 });
