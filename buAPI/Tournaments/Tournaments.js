@@ -1,9 +1,9 @@
-const { Service } = require("sht-tasks");
+const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
 
-Service.ServerModule("Tournaments", function() {
+App.ServerModule("Tournaments", function() {
   const Tournaments = this;
 
   Tournaments.get = (
@@ -102,4 +102,4 @@ Service.ServerModule("Tournaments", function() {
     cb(null, { message: "You called Tournaments.createInvite method" });
 });
 
-module.exports = Service;
+module.exports = App;

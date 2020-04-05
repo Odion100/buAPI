@@ -1,8 +1,8 @@
-const { Service } = require("sht-tasks");
+const { App } = require("sht-tasks");
 const usersModel = require("./Users.model");
 const { Types } = require("mongoose");
 
-Service.ServerModule("Users", function() {
+App.ServerModule("Users", function() {
   const Users = this;
 
   Users.get = ({ id, email, password, status }, cb) => {
@@ -56,4 +56,4 @@ Service.ServerModule("Users", function() {
   };
 });
 
-module.exports = Service;
+module.exports = App;
