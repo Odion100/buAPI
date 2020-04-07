@@ -5,12 +5,6 @@ const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const unique = true;
 const immutable = true;
-const validate = {
-  validator: function() {
-    return this.status === "unpublished";
-  },
-  message: "Tournament details cannot be updated once it has been published"
-};
 
 module.exports = model(
   "Tournaments",
@@ -30,7 +24,7 @@ module.exports = model(
     created_date: { type: Date, default: moment().toJSON(), immutable },
 
     //Constants
-    teams: [{ type: Schema.Types.ObjectId, validate }],
+    teams: [{ type: Schema.Types.ObjectId }],
     status: {
       type: String,
       default: "unpublished",
@@ -44,15 +38,15 @@ module.exports = model(
     primary_zipcodes: [String],
     description: String,
 
-    //validate status and Non Constant
-    team_limit: { type: Number, validate },
-    type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"], validate },
-    rules: { type: [String], validate },
-    refereed: { type: Boolean, default: false, validate },
-    rounds: { type: Number, enum: [1, 2, 3, 4], default: 1, validate },
-    clock: { type: Number, default: 0, validate },
-    start_date: { type: Date, validate },
-    end_date: { type: Date, validate }
+    //Constants by status
+    team_limit: { type: Number, default: 2, min: 2 },
+    type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"] },
+    rules: { type: [String] },
+    refereed: { type: Boolean, default: false },
+    rounds: { type: Number, enum: [1, 2, 3, 4], default: 1 },
+    clock: { type: Number, default: 0 },
+    start_date: { type: Date },
+    end_date: { type: Date }
   })
     .pre("findOne", queryValidations)
     .pre("findOneAndUpdate", constantsValidator(["status", "teams", "name"]))

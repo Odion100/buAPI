@@ -83,14 +83,47 @@ App.ServerModule("Tournaments", function() {
   Tournaments.updateFields = async ({ id, fields }, cb) => {
     if (!id || !fields)
       return cb({ status: 404, message: "Invalid options:Expecting: id, fields" });
-    tournamentsModel
-      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
-      .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
-      .catch(error => cb({ error }));
+    try {
+      const tournament = await tournamentsModel.findOne({ _id: id });
+      if (tournament.status !== "unpublished")
+        cb({
+          status: 403,
+          message: "Tournament details cannot be updated once it has been published"
+        });
+      tournamentsModel
+        .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
+        .then(updatedTournament => cb(null, { updatedTournament, status: 200 }));
+    } catch (error) {
+      cb(error);
+    }
   };
 
-  Tournaments.publish = ({ id }, cb) => {
-    cb(null, { message: "You called Tournaments.publish method" });
+  Tournaments.publish = async ({ id }, cb) => {
+    try {
+      const tournament = await tournamentsModel.findOne({ _id: id });
+
+      if (tournament.status !== "unpublished")
+        return cb({ status: 403, tournament, message: "Tournament has already been published" });
+      if (!tournament.start_date || !moment(tournament.start_date).isSameOrAfter(moment(), "day"))
+        return cb({
+          status: 403,
+          tournament,
+          message: "Tournament start date be today or before, to be published"
+        });
+      if (!tournament.type)
+        return cb({
+          status: 403,
+          tournament,
+          message: "Tournament type must be choosen before it can be published"
+        });
+      tournament.status = "published";
+      tournament
+        .save()
+        .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
+        .catch(error => cb(error));
+    } catch (error) {
+      cb(error);
+    }
   };
 
   Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
