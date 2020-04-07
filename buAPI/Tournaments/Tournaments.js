@@ -85,8 +85,10 @@ App.ServerModule("Tournaments", function() {
       return cb({ status: 404, message: "Invalid options:Expecting: id, fields" });
     try {
       const tournament = await tournamentsModel.findOne({ _id: id });
+      if (!tournament) return cb({ status: 404, message: "Tournament not found" });
+
       if (tournament.status !== "unpublished")
-        cb({
+        return cb({
           status: 403,
           message: "Tournament details cannot be updated once it has been published"
         });
@@ -101,6 +103,7 @@ App.ServerModule("Tournaments", function() {
   Tournaments.publish = async ({ id }, cb) => {
     try {
       const tournament = await tournamentsModel.findOne({ _id: id });
+      if (!tournament) return cb({ status: 404, message: "Tournament not found" });
 
       if (tournament.status !== "unpublished")
         return cb({ status: 403, tournament, message: "Tournament has already been published" });
@@ -126,7 +129,19 @@ App.ServerModule("Tournaments", function() {
     }
   };
 
-  Tournaments.cancel = (data, cb) => cb(null, { message: "You called Tournaments.cancel method" });
+  Tournaments.cancel = ({ id }, cb) => {
+    tournamentsModel.findOne({ id }).then(tournament => {
+      if (!tournament) return cb({ status: 404, message: "Tournament not found" });
+
+      // switch (key) {
+      //   case value:
+      //     break;
+
+      //   default:
+      //     break;
+      // }
+    });
+  };
 
   Tournaments.reactivate = (data, cb) =>
     cb(null, { message: "You called Tournaments.reactivate method" });
