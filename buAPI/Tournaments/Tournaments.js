@@ -130,6 +130,7 @@ App.ServerModule("Tournaments", function() {
   };
 
   Tournaments.cancel = ({ id }, cb) => {
+    1;
     tournamentsModel
       .findOne({ _id: id })
       .then(tournament => {
@@ -158,9 +159,34 @@ App.ServerModule("Tournaments", function() {
       .catch(error => cb(error));
   };
 
-  Tournaments.reactivate = (data, cb) =>
-    cb(null, { message: "You called Tournaments.reactivate method" });
+  Tournaments.reactivate = ({ id }, cb) => {
+    tournamentsModel
+      .findOne({ _id: id })
+      .then(tournament => {
+        if (!tournament) return cb({ status: 404, message: `Tournament not found for id:${id}` });
 
+        switch (tournament.status) {
+          case "unpublished":
+            tournament.status = "unpublished";
+            Tournaments.publish({ id }, cb);
+            break;
+          case "paused":
+            tournament.status = "in progress";
+            tournament
+              .save()
+              .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
+              .catch(error => cb(error));
+            break;
+          default:
+            return cb({
+              status: 403,
+              message:
+                "A tournament cannot be reactivated unless it's status is 'unpublished' or 'paused'"
+            });
+        }
+      })
+      .catch(error => cb(error));
+  };
   Tournaments.createInvite = (data, cb) =>
     cb(null, { message: "You called Tournaments.createInvite method" });
 });
