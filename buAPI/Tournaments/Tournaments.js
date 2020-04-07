@@ -130,17 +130,32 @@ App.ServerModule("Tournaments", function() {
   };
 
   Tournaments.cancel = ({ id }, cb) => {
-    tournamentsModel.findOne({ id }).then(tournament => {
-      if (!tournament) return cb({ status: 404, message: "Tournament not found" });
+    tournamentsModel
+      .findOne({ _id: id })
+      .then(tournament => {
+        if (!tournament) return cb({ status: 404, message: `Tournament not found for id:${id}` });
 
-      // switch (key) {
-      //   case value:
-      //     break;
+        switch (tournament.status) {
+          case "published":
+            tournament.status = "unpublished";
+            break;
+          case "in progress":
+            tournament.status = "paused";
+            break;
+          default:
+            return cb({
+              status: 403,
+              message:
+                "A tournament cannot be canceled unless it's status is 'in progress' or 'published'"
+            });
+        }
 
-      //   default:
-      //     break;
-      // }
-    });
+        tournament
+          .save()
+          .then(updatedTournament => cb(null, { updatedTournament, status: 200 }))
+          .catch(error => cb(error));
+      })
+      .catch(error => cb(error));
   };
 
   Tournaments.reactivate = (data, cb) =>
