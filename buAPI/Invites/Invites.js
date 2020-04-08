@@ -32,13 +32,13 @@ Service.ServerModule("Invites", function() {
       .catch(error => cb(error));
   };
 
-  Invites.sendResponse = ({ id, message = "", status }) => {
+  Invites.sendResponse = ({ id, message = "", status }, cb) => {
     if (!id) return cb({ status: 404, message: "invalid options: 'id' is required" });
 
     if (status !== "accepted" && status !== "rejected")
       return cb("invalid options: status must be 'accepted' or 'rejected'");
     invitesModel
-      .findOne({ id })
+      .findOne({ _id: id })
       .then(invite => {
         if (!invite) return cb({ status: 404, message: "invite not found" });
         if (invite.status !== "sent")
@@ -58,7 +58,7 @@ Service.ServerModule("Invites", function() {
   Invites.cancel = ({ id }, cb) => {
     if (!id) return cb({ status: 404, message: "invalid options: 'id' is required" });
     invitesModel
-      .findOne({ id })
+      .findOne({ _id: id })
       .then(invite => {
         if (!invite) return cb({ status: 404, message: "invite not found" });
         if (invite.status !== "sent")
@@ -77,10 +77,10 @@ Service.ServerModule("Invites", function() {
       .catch(error => cb(error));
   };
 
-  Invites.markedAsViewed = ({ id }) => {
+  Invites.markedAsViewed = ({ id }, cb) => {
     if (!id) return cb({ status: 404, message: "invalid options: 'id' is required" });
     invitesModel
-      .findOne({ id })
+      .findOne({ _id: id })
       .then(invite => {
         if (!invite) return cb({ status: 404, message: "invite not found" });
 
@@ -93,11 +93,11 @@ Service.ServerModule("Invites", function() {
       .catch(error => cb(error));
   };
 
-  Invites.resend = ({ id, message }) => {
+  Invites.resend = ({ id, message }, cb) => {
     //resend existing invites that were rejected or canceld
     if (!id) return cb({ status: 404, message: "invalid options: 'id' is required" });
     invitesModel
-      .findOne({ id })
+      .findOne({ _id: id })
       .then(invite => {
         if (!invite) return cb({ status: 404, message: "invite not found" });
 
