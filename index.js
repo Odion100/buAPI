@@ -2,7 +2,7 @@ require("dotenv").config();
 const route = "bu/api";
 const port = 7899;
 const useREST = true;
-const { App } = require("sht-tasks");
+const { App, Service } = require("sht-tasks");
 const mongoose = require("mongoose");
 
 mongoose
@@ -13,6 +13,7 @@ mongoose
   .then(data => console.log("mongodb connected:-->"))
   .catch(err => console.log("mongodb connection failed:-->", err.massage));
 
+require("./buAPI/Invites/Invites");
 require("./buAPI/Users/Users");
 require("./buAPI/Tournaments/Tournaments");
 require("./buAPI/Stats/Stats");
@@ -25,4 +26,6 @@ require("./buAPI/Games/Games");
 require("./buAPI/Broadcasts/Broadcasts");
 require("./buAPI/Filestore/Filestore");
 
-App.startService({ route, port, useREST });
+Service.startService({ route: "bu/utils", port: 7900, useREST }).then(() =>
+  App.startService({ route, port, useREST })
+);
