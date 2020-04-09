@@ -1,17 +1,27 @@
-const { Service } = require("sht-tasks");
+const { App } = require("sht-tasks");
+const teamsModel = require("./teams.model");
+const { Types } = require("mongoose");
+const moment = require("moment");
 
-Service.ServerModule("Teams", function() {
+App.ServerModule("Teams", function() {
   const Teams = this;
 
-  Teams.create = (data, cb) => cb(null, { message: "You called Teams.create method" });
+  Teams.add = (data, cb) => {
+    new teamsModel({ _id: Types.ObjectId(), ...data })
+      .save()
+      .then(newTeam =>
+        cb(null, { newTeam, status: 200, message: "New team created successfully." })
+      )
+      .catch(error => cb({ error, status: 400, message: "Failed to create new team" }));
+  };
 
   Teams.get = (data, cb) => cb(null, { message: "You called Teams.get method" });
 
-  Teams.update = (data, cb) => cb(null, { message: "You called Teams.update method" });
+  Teams.updateFields = (data, cb) => cb(null, { message: "You called Teams.update method" });
 
-  Teams.cancelEvent = (data, cb) => cb(null, { message: "You called Teams.cancel method" });
+  Teams.updateStatus = (data, cb) => cb(null, { message: "You called Teams.cancel method" });
 
-  Teams.createEvent = (data, cb) => cb(null, { message: "You called Teams.reactivate method" });
+  Teams.createInvite = (data, cb) => cb(null, { message: "You called Teams.reactivate method" });
 });
 
-module.exports = Service;
+module.exports = App;
