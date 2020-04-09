@@ -14,13 +14,13 @@ module.exports = model(
     source: { type: Schema.Types.ObjectId, required },
     target_type: { type: String, enum: ["team", "user"], required },
     target: { type: Schema.Types.ObjectId, required },
-    invitation_message: String,
+    invitation_message: { type: String, default: "" },
     status: {
       type: String,
       enum: ["sent", "accepted", "rejected", "canceled"],
       default: "sent"
     },
-    response_message: String,
+    response_message: { type: String, default: "" },
     response_date: Date,
     viewed_date: Date
   })
