@@ -27,6 +27,10 @@ require("./buAPI/Teams/Teams");
 // require("./buAPI/Broadcasts/Broadcasts");
 // require("./buAPI/Filestore/Filestore");
 
-Service.startService({ route: "bu/utils", port: 7900, useREST }).then(() =>
-  App.startService({ route, port, useREST })
-);
+Service.startService({ route: "bu/utils", port: 7900, useREST }).then(() => {
+  App.startService({ route, port, useREST }).loadService("Utils", {
+    route: "bu/utils",
+    port: 7900,
+    host: "localhost"
+  });
+});
