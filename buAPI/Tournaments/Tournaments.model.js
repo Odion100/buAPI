@@ -19,11 +19,12 @@ module.exports = model(
       unique,
       immutable
     },
-    name: { type: String, required },
+
     root_admin: { type: Schema.Types.ObjectId, required, immutable },
     created_date: { type: Date, default: moment().toJSON(), immutable },
 
     //Constants
+    name: { type: String, required },
     teams: [{ type: Schema.Types.ObjectId }],
     status: {
       type: String,

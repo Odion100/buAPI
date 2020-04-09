@@ -16,15 +16,16 @@ mongoose
 require("./buAPI/Invites/Invites");
 require("./buAPI/Users/Users");
 require("./buAPI/Tournaments/Tournaments");
-require("./buAPI/Stats/Stats");
-require("./buAPI/Courts/Courts");
-require("./buAPI/NewsFeed/NewsFeed");
-require("./buAPI/ActivityFeed/ActivityFeed");
-require("./buAPI/Notifications/Notifications");
-require("./buAPI/Messanger/Messanger");
-require("./buAPI/Games/Games");
-require("./buAPI/Broadcasts/Broadcasts");
-require("./buAPI/Filestore/Filestore");
+require("./buAPI/Teams/Teams");
+// require("./buAPI/Stats/Stats");
+// require("./buAPI/Courts/Courts");
+// require("./buAPI/NewsFeed/NewsFeed");
+// require("./buAPI/ActivityFeed/ActivityFeed");
+// require("./buAPI/Notifications/Notifications");
+// require("./buAPI/Messanger/Messanger");
+// require("./buAPI/Games/Games");
+// require("./buAPI/Broadcasts/Broadcasts");
+// require("./buAPI/Filestore/Filestore");
 
 Service.startService({ route: "bu/utils", port: 7900, useREST }).then(() =>
   App.startService({ route, port, useREST })

@@ -19,7 +19,7 @@ Service.ServerModule("Invites", function() {
     if (id) queries.push({ _id: id });
     if (source) queries.push({ source });
     if (target) queries.push({ target });
-
+    console.log(queries);
     if (queries.length === 0)
       return cb({
         message: "Invalid request options. Expecting id or source and/or target",
