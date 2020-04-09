@@ -188,8 +188,6 @@ App.ServerModule("Tournaments", function() {
       })
       .catch(error => cb(error));
   };
-  Tournaments.createInvite = (data, cb) =>
-    cb(null, { message: "You called Tournaments.createInvite method" });
 });
 
 module.exports = App;
