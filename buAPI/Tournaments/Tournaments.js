@@ -5,7 +5,6 @@ const moment = require("moment");
 
 App.ServerModule("Tournaments", function() {
   const Tournaments = this;
-  const { Invites } = this.useService("Utils");
 
   Tournaments.get = (
     {
