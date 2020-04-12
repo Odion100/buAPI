@@ -50,7 +50,10 @@ Service.ServerModule("Invites", function () {
         invite.response_date = moment().toJSON();
         invite
           .save()
-          .then((updatedInvite) => cb(null, { updatedInvite, status: 200 }))
+          .then((updatedInvite) => {
+            cb(null, { updatedInvite, status: 200 });
+            Invites.emit(`invite_response:${updatedInvite.source}`, updatedInvite);
+          })
           .catch((error) => cb(error));
       })
       .catch((error) => cb(error));
@@ -72,7 +75,10 @@ Service.ServerModule("Invites", function () {
         invite.status = "canceled";
         invite
           .save()
-          .then((updatedInvite) => cb(null, { updatedInvite, status: 200 }))
+          .then((updatedInvite) => {
+            cb(null, { updatedInvite, status: 200 });
+            Invites.emit(`invite_canceled:${updatedInvite.target}`, updatedInvite);
+          })
           .catch((error) => cb(error));
       })
       .catch((error) => cb(error));
@@ -88,7 +94,10 @@ Service.ServerModule("Invites", function () {
         invite.viewed_date = moment().toJSON();
         invite
           .save()
-          .then((updatedInvite) => cb(null, { updatedInvite, status: 200 }))
+          .then((updatedInvite) => {
+            cb(null, { updatedInvite, status: 200 });
+            Invites.emit(`invite_viewed:${updatedInvite.source}`, updatedInvite);
+          })
           .catch((error) => cb(error));
       })
       .catch((error) => cb(error));
@@ -108,7 +117,10 @@ Service.ServerModule("Invites", function () {
 
         invite
           .save()
-          .then((updatedInvite) => cb(null, { updatedInvite, status: 200 }))
+          .then((updatedInvite) => {
+            cb(null, { updatedInvite, status: 200 });
+            Invites.emit(`new_invite:${updatedInvite.target}`, updatedInvite);
+          })
           .catch((error) => cb(error));
       })
       .catch((error) => cb(error));
