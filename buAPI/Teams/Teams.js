@@ -49,7 +49,7 @@ App.ServerModule("Teams", function () {
 
       if (name) queries.push({ name: { $regex: new RegExp(`\\b${name}`, "gi") } });
     }
-    console.log(queries);
+    //console.log(queries);
     if (queries.length === 0)
       return cb(null, {
         message: "Invalid request options",
