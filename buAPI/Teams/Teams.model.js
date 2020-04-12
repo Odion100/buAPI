@@ -12,11 +12,11 @@ module.exports = model(
     _id: Schema.Types.ObjectId,
     uid: {
       type: String,
-      default: function() {
+      default: function () {
         return `${this.root_admin}-${this.name}`;
       },
       unique,
-      immutable
+      immutable,
     },
     root_admin: { type: Schema.Types.ObjectId, required, immutable },
     created_date: { type: Date, default: moment().toJSON(), immutable },
@@ -26,12 +26,12 @@ module.exports = model(
     name: { type: String, required },
 
     //Non Constants
-    status: String,
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     profile_image: String,
     banner_image: String,
     secondary_admins: [{ type: Schema.Types.ObjectId }],
     primary_zipcodes: [String],
-    description: String
+    description: String,
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)
