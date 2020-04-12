@@ -57,17 +57,15 @@ App.ServerModule("Teams", function () {
       });
 
     queries.push({ status });
+    teamsModel.find({ $and: queries }).then((teams) => cb(null, { teams, status: 200 }));
+  };
+
+  Teams.updateFields = async ({ id, fields }, cb) => {
     teamsModel
-      .find({ $and: queries })
-      .then((teams) => cb(null, { teams, status: 200 }))
+      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
+      .then((updatedTeam) => cb(null, { updatedTeam, status: 200 }))
       .catch((error) => cb(error));
   };
-
-  Teams.updateFields = (data, cb) => {
-    cb(null, { message: "You called Teams.update method" });
-  };
-
-  Teams.updateStatus = (data, cb) => cb(null, { message: "You called Teams.cancel method" });
 });
 
 module.exports = App;
