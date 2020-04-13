@@ -7,7 +7,6 @@ App.module("tournaments_invite_processor", function () {
   const { Invites } = this.useService("Utils");
   const mod = this;
   Invites.on("invite_accepted:tournaments", async (invite) => {
-    console.log(invite);
     const tournament = await tournamentsModel.findById(invite.source);
 
     if (tournament) {

@@ -53,7 +53,7 @@ Service.ServerModule("Invites", function () {
           .then((updatedInvite) => {
             cb(null, { updatedInvite, status: 200 });
             Invites.emit(`invite_response:${updatedInvite.source}`, updatedInvite);
-            console.log(`invite_accepted:${updatedInvite.source_type}`);
+
             if (status === "accepted")
               Invites.emit(`invite_accepted:${updatedInvite.source_type}`, updatedInvite);
           })

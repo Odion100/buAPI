@@ -12,7 +12,7 @@ module.exports = model(
     created_date: { type: Date, default: moment().toJSON(), immutable },
     source_type: { type: String, enum: ["tournaments", "teams", "users"], required },
     source: { type: Schema.Types.ObjectId, required },
-    target_type: { type: String, enum: ["team", "user"], required },
+    target_type: { type: String, enum: ["teams", "users"], required },
     target: { type: Schema.Types.ObjectId, required },
     invitation_message: { type: String, default: "" },
     status: {
