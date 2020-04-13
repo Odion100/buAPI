@@ -13,11 +13,11 @@ module.exports = model(
     _id: Schema.Types.ObjectId,
     uid: {
       type: String,
-      default: function() {
+      default: function () {
         return `${this.root_admin}-${this.name}`;
       },
       unique,
-      immutable
+      immutable,
     },
 
     root_admin: { type: Schema.Types.ObjectId, required, immutable },
@@ -29,13 +29,13 @@ module.exports = model(
     status: {
       type: String,
       default: "unpublished",
-      enum: ["unpublished", "published", "in progress", "canceled", "paused", "completed"]
+      enum: ["unpublished", "published", "in progress", "canceled", "paused", "completed"],
     },
 
     //Non Constants
     profile_image: String,
     banner_image: String,
-    secondary_admins: [{ type: Schema.Types.ObjectId }],
+    secondary_admins: [{ type: Schema.Types.ObjectId, unique }],
     primary_zipcodes: [String],
     description: String,
 
@@ -47,7 +47,7 @@ module.exports = model(
     rounds: { type: Number, enum: [1, 2, 3, 4], default: 1 },
     clock: { type: Number, default: 0 },
     start_date: { type: Date },
-    end_date: { type: Date }
+    end_date: { type: Date },
   })
     .pre("findOne", queryValidations)
     .pre("findOneAndUpdate", constantsValidator(["status", "teams", "name"]))
