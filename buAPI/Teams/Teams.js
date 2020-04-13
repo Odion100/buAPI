@@ -60,7 +60,9 @@ App.ServerModule("Teams", function () {
     teamsModel.find({ $and: queries }).then((teams) => cb(null, { teams, status: 200 }));
   };
 
-  Teams.updateFields = async ({ id, fields }, cb) => {
+  Teams.updateFields = ({ id, fields }, cb) => {
+    if (!id || !fields)
+      return cb({ status: 404, message: "Invalid options: id & fields are required options" });
     teamsModel
       .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
       .then((updatedTeam) => cb(null, { updatedTeam, status: 200 }))
