@@ -1,7 +1,5 @@
 const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
-const { Types } = require("mongoose");
-const moment = require("moment");
 
 App.module("tournaments_invite_processor", function () {
   const { Invites } = this.useService("Utils");

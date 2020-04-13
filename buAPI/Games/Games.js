@@ -1,21 +1,25 @@
-const { Service } = require("sht-tasks");
+const { App } = require("sht-tasks");
+const gamesModel = require("./teams.model");
+const { Types } = require("mongoose");
+const moment = require("moment");
 
-Service.ServerModule("Broadcasts", function() {
-  const Broadcasts = this;
+Service.ServerModule("Games", function () {
+  const Games = this;
 
-  Broadcasts.get = (data, cb) => cb(null, { message: "You called Broadcasts.get method" });
+  Games.add = (data, cb) => {
+    new gamesModel({ _id: Types.ObjectId(), ...data })
+      .save()
+      .then((newGame) =>
+        cb(null, { newGame, status: 200, message: "New Game created successfully." })
+      )
+      .catch((error) => cb({ error, status: 400, message: "Failed to create new Game" }));
+  };
 
-  Broadcasts.put = (data, cb) => cb(null, { message: "You called Broadcasts.put method" });
+  Games.get = (data, cb) => cb(null, { message: "You called Games.get method" });
 
-  Broadcasts.post = (data, cb) => cb(null, { message: "You called Broadcasts.post method" });
+  Games.updateFields = (data, cb) => cb(null, { message: "You called Games.put method" });
 
-  Broadcasts.cancel = (data, cb) => cb(null, { message: "You called Broadcasts.cancel method" });
-
-  Broadcasts.update = (data, cb) =>
-    cb(null, { message: "You called Broadcasts.reactivate method" });
-
-  Broadcasts.createInvite = (data, cb) =>
-    cb(null, { message: "You called Broadcasts.createInvite method" });
+  Games.updateStatus = (data, cb) => cb(null, { message: "You called Games.post method" });
 });
 
 module.exports = Service;
