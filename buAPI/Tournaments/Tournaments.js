@@ -2,9 +2,11 @@ const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
+require("./Tournaments.background");
 
 App.ServerModule("Tournaments", function () {
   const Tournaments = this;
+  const tournament_invite_processor = this.useModule("tournaments_invite_processor");
 
   Tournaments.get = (
     {
@@ -187,6 +189,11 @@ App.ServerModule("Tournaments", function () {
       })
       .catch((error) => cb(error));
   };
+
+  tournament_invite_processor.on("team_added", ({ team_id, tournament }) => {
+    console.log(`team_added:${team_id}`);
+    Tournaments.emit(`team_added:${team_id}`, tournament);
+  });
 });
 
 module.exports = App;
