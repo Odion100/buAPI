@@ -10,7 +10,7 @@ module.exports = model(
   Schema({
     _id: Schema.Types.ObjectId,
     created_date: { type: Date, default: moment().toJSON(), immutable },
-    source_type: { type: String, enum: ["tournament", "team"], required },
+    source_type: { type: String, enum: ["tournaments", "teams", "users"], required },
     source: { type: Schema.Types.ObjectId, required },
     target_type: { type: String, enum: ["team", "user"], required },
     target: { type: Schema.Types.ObjectId, required },
@@ -18,11 +18,12 @@ module.exports = model(
     status: {
       type: String,
       enum: ["sent", "accepted", "rejected", "canceled"],
-      default: "sent"
+      default: "sent",
     },
+    type: { type: String, enum: ["games", "teams", "tournaments", required] },
     response_message: { type: String, default: "" },
     response_date: Date,
-    viewed_date: Date
+    viewed_date: Date,
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)
