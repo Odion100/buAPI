@@ -26,6 +26,7 @@ module.exports = model(
     name: { type: String, required },
 
     //Non Constants
+    temporary: { type: Boolean, default: false },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
     profile_image: String,
     banner_image: String,
