@@ -16,12 +16,13 @@ module.exports = model(
     team2: { type: Schema.Types.ObjectId, required, immutable },
     court: { type: Schema.Types.ObjectId, required, immutable },
 
-    start_date: Date,
+    start_date: { type: Date, default: moment().toJSON() },
     status: {
       type: String,
       enum: ["pending", "confirmed", "in progress", "completed", "canceled"],
       default: "pending",
     },
+    tags: [String],
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)
