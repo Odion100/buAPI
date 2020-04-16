@@ -21,10 +21,10 @@ module.exports = model(
     },
     tags: [String],
     team_size: { type: Number, max: 5 },
-    rules: String,
     rounds: { type: Number, default: 1, min: 1, max: 4 },
     clock: { type: Number, default: 0 },
     overtime_clock: { type: Number, default: 0 },
+    refs: { type: Boolean, default: false },
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)

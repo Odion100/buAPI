@@ -55,7 +55,7 @@ Service.ServerModule("Invites", function () {
             Invites.emit(`invite_response:${updatedInvite.source}`, updatedInvite);
 
             if (status === "accepted")
-              Invites.emit(`invite_accepted:${updatedInvite.source_type}`, updatedInvite);
+              Invites.emit(`invite_accepted:${updatedInvite.type}`, updatedInvite);
           })
           .catch((error) => cb(error));
       })
