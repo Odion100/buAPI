@@ -20,7 +20,7 @@ module.exports = model(
       enum: ["sent", "accepted", "rejected", "canceled"],
       default: "sent",
     },
-    type: { type: String, enum: ["games", "teams", "tournaments", required] },
+    type: { type: String, enum: ["teams", "tournaments", required] },
     response_message: { type: String, default: "" },
     response_date: Date,
     viewed_date: Date,

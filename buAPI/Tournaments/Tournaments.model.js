@@ -43,7 +43,6 @@ module.exports = model(
     team_limit: { type: Number, default: 2, min: 2 },
     type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"] },
     rules: { type: [String] },
-    refereed: { type: Boolean, default: false },
     rounds: { type: Number, enum: [1, 2, 3, 4], default: 1 },
     clock: { type: Number, default: 0 },
     start_date: { type: Date },

@@ -71,4 +71,16 @@ App.ServerModule("Games", function () {
       .then((updatedGame) => cb(null, { updatedGame, status: 200 }))
       .catch((error) => cb(error));
   };
+
+  Games.cancel = async ({ id, status }, cb) => {
+    try {
+      const game = await gamesModel.findById(id);
+      if (!game) return cb({ message: "Games resource not found", status: 404 });
+      game.status = status;
+      const updatedGame = await game.save();
+      cb(null, { status: 200, updatedGame });
+    } catch (error) {
+      cb(error);
+    }
+  };
 });
