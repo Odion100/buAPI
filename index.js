@@ -13,11 +13,11 @@ mongoose
   .then((data) => console.log("mongodb connected:-->"))
   .catch((err) => console.log("mongodb connection failed:-->", err.massage));
 
-require("./buAPI/Invites/Invites");
-require("./buAPI/Users/Users");
-require("./buAPI/Tournaments/Tournaments");
-require("./buAPI/Teams/Teams");
-require("./buAPI/Games/Games");
+require("./buAPI/Invites/Invites.api");
+require("./buAPI/Users/Users.api");
+require("./buAPI/Tournaments/Tournaments.api");
+require("./buAPI/Teams/Teams.api");
+require("./buAPI/Games/Games.api");
 // require("./buAPI/Stats/Stats");
 // require("./buAPI/Courts/Courts");
 // require("./buAPI/NewsFeed/NewsFeed");

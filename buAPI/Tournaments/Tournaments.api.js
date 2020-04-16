@@ -190,10 +190,9 @@ App.ServerModule("Tournaments", function () {
       .catch((error) => cb(error));
   };
 
-  tournament_invite_processor.on("team_added", ({ team_id, tournament }) => {
-    console.log(`team_added:${team_id}`);
-    Tournaments.emit(`team_added:${team_id}`, tournament);
-  });
+  tournament_invite_processor.on("team_added", ({ team_id, tournament }) =>
+    Tournaments.emit(`team_added:${team_id}`, tournament)
+  );
 });
 
 module.exports = App;
