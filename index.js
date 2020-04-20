@@ -18,8 +18,10 @@ require("./buAPI/Users/Users.api");
 require("./buAPI/Tournaments/Tournaments.api");
 require("./buAPI/Teams/Teams.api");
 require("./buAPI/Games/Games.api");
+require("./buAPI/Callouts/Callouts.api");
 // require("./buAPI/Stats/Stats");
 // require("./buAPI/Courts/Courts");
+
 // require("./buAPI/NewsFeed/NewsFeed");
 // require("./buAPI/ActivityFeed/ActivityFeed");
 // require("./buAPI/Notifications/Notifications");

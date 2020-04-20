@@ -4,7 +4,7 @@ const queryValidations = require("../_utils/queryValidator");
 const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const immutable = true;
-
+const unique = true;
 module.exports = model(
   "Callouts",
   Schema({
@@ -13,15 +13,16 @@ module.exports = model(
     created_date: { type: Date, default: moment().toJSON(), immutable },
     //easy update
     date: { type: Date, required },
-    court: { type: this.schema.Types.ObjectId, required },
-    public: { type: Boolean, default: true },
+    court: { type: Schema.Types.ObjectId, required },
+    invite_only: { type: Boolean, default: false },
     description: { type: String, default: "" },
+    tags: [String],
     //constants
-    matchups: [Schema.Types.ObjectId],
-    attendees: [Schema.Types.ObjectId],
-    status: { type: String, enum: ["published", "canceled"] },
+    invitees: [{ type: Schema.Types.ObjectId, unique }],
+    attendees: [{ type: Schema.Types.ObjectId, unique }],
+    status: { type: String, enum: ["active", "completed", "canceled"], default: "active" },
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)
-    .pre("findOneAndUpdate", constantsValidator(["status", "matchups", "attendees"]))
+    .pre("findOneAndUpdate", constantsValidator(["status", "attendees", "invites"]))
 );
