@@ -11,7 +11,7 @@ mongoose
     { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
   )
   .then((data) => console.log("mongodb connected:-->"))
-  .catch((err) => console.log("mongodb connection failed:-->", err.massage));
+  .catch((err) => console.log("mongodb connection failed:-->", err));
 
 require("./buAPI/Invites/Invites.api");
 require("./buAPI/Users/Users.api");

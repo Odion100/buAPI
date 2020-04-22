@@ -8,6 +8,15 @@ App.ServerModule("Tournaments", function () {
   const Tournaments = this;
   const tournament_invite_processor = this.useModule("tournaments_invite_processor");
 
+  Tournaments.add = (data, cb) => {
+    new tournamentsModel({ _id: Types.ObjectId(), ...data })
+      .save()
+      .then((newTournament) =>
+        cb(null, { newTournament, status: 200, message: "New tournament created successfully." })
+      )
+      .catch((error) => cb({ error, status: 400, message: "Failed to create new tournament" }));
+  };
+
   Tournaments.get = (
     {
       id,
@@ -71,15 +80,6 @@ App.ServerModule("Tournaments", function () {
         else cb(null, { message: "tournaments resource not found", status: 404 });
       })
       .catch((error) => cb(error));
-  };
-
-  Tournaments.add = (data, cb) => {
-    new tournamentsModel({ _id: Types.ObjectId(), ...data })
-      .save()
-      .then((newTournament) =>
-        cb(null, { newTournament, status: 200, message: "New tournament created successfully." })
-      )
-      .catch((error) => cb({ error, status: 400, message: "Failed to create new tournament" }));
   };
 
   Tournaments.updateFields = async ({ id, fields }, cb) => {
