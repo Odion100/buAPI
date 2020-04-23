@@ -5,6 +5,7 @@ const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const unique = true;
 const immutable = true;
+const select = false;
 
 module.exports = model(
   "Tournaments",
@@ -19,10 +20,8 @@ module.exports = model(
       unique,
       immutable,
     },
-
     root_admin: { type: Schema.Types.ObjectId, required, immutable },
     created_date: { type: Date, default: moment().toJSON(), immutable },
-
     //Constants
     name: { type: String, required },
     teams: [{ type: Schema.Types.ObjectId }],
@@ -31,14 +30,13 @@ module.exports = model(
       default: "unpublished",
       enum: ["unpublished", "published", "in progress", "canceled", "paused", "completed"],
     },
-
+    tags: { type: [String], select },
     //Non Constants
     profile_image: String,
     banner_image: String,
     secondary_admins: [{ type: Schema.Types.ObjectId, unique }],
     primary_zipcodes: [String],
     description: String,
-
     //Constants by status
     team_limit: { type: Number, default: 2, min: 2 },
     type: { type: String, enum: ["1 on 1", "2 on 2", "3 on 3", "4 on 4", "5 on 5"] },
@@ -49,5 +47,5 @@ module.exports = model(
     end_date: { type: Date },
   })
     .pre("findOne", queryValidations)
-    .pre("findOneAndUpdate", constantsValidator(["status", "teams", "name"]))
+    .pre("findOneAndUpdate", constantsValidator(["status", "teams", "name", "tags"]))
 );

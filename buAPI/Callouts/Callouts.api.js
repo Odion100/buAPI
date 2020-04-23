@@ -2,9 +2,11 @@ const { App } = require("sht-tasks");
 const calloutsModel = require("./Callouts.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
+const Tags = require("../_sharedMethods/Tags.api");
 
 App.ServerModule("Callouts", function () {
   const Callouts = this;
+  Tags.apply(Callouts, [calloutsModel]);
 
   Callouts.add = (data, cb) => {
     new calloutsModel({ _id: Types.ObjectId(), ...data })
@@ -16,19 +18,7 @@ App.ServerModule("Callouts", function () {
   };
 
   Callouts.get = (
-    {
-      id,
-      creator,
-      created_date,
-      date,
-      court,
-      invite_only,
-      description,
-      tag,
-      attendee,
-      invitee,
-      status,
-    },
+    { id, creator, created_date, date, court, invite_only, description, attendee, invitee, status },
     cb
   ) => {
     const queries = [];
@@ -50,7 +40,6 @@ App.ServerModule("Callouts", function () {
       if (creator) queries.push({ creator });
       if (court) queries.push({ court });
       if (status) queries.push({ status });
-      if (tag) queries.push({ tags: tag });
       if (invite_only) queries.push({ invite_only });
       if (description)
         queries.push({ description: { $regex: new RegExp(`\\b${description}`, "gi") } });

@@ -2,9 +2,11 @@ const { App } = require("sht-tasks");
 const gamesModel = require("./Games.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
+const Tags = require("../_sharedMethods/Tags.api");
 
 App.ServerModule("Games", function () {
   const Games = this;
+  Tags.apply(Games, [gamesModel]);
 
   Games.add = (data, cb) => {
     new gamesModel({ _id: Types.ObjectId(), ...data })
@@ -27,7 +29,6 @@ App.ServerModule("Games", function () {
       status,
       start_date,
       to_start_date,
-      tag,
     },
     cb
   ) => {
@@ -50,7 +51,6 @@ App.ServerModule("Games", function () {
       if (creator) queries.push({ creator });
       if (court) queries.push({ court });
       if (status) queries.push({ status });
-      if (tag) queries.push({ tags: tag });
     }
 
     //console.log(queries);
@@ -63,13 +63,25 @@ App.ServerModule("Games", function () {
     gamesModel.find({ $and: queries }).then((games) => cb(null, { games, status: 200 }));
   };
 
-  Games.updateFields = ({ id, fields }, cb) => {
+  Games.updateFields = async ({ id, fields }, cb) => {
     if (!id || !fields)
       return cb({ status: 404, message: "Invalid options: id & fields are required options" });
-    gamesModel
-      .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
-      .then((updatedGame) => cb(null, { updatedGame, status: 200 }))
-      .catch((error) => cb(error));
+    try {
+      const game = await gamesModel.findById(id);
+      if (!game) return cb({ status: 404, message: "Game not found" });
+
+      if (game.status !== "unpublished")
+        return cb({
+          status: 403,
+          message: "Game details cannot be updated once it has been published",
+        });
+      gamesModel
+        .findByIdAndUpdate(id, { $set: fields }, { new: true, useFindAndModify: false })
+        .then((updatedGame) => cb(null, { updatedGame, status: 200 }))
+        .catch((error) => cb(error));
+    } catch (error) {
+      cb(error);
+    }
   };
 
   Games.cancel = async ({ id, status }, cb) => {

@@ -2,10 +2,13 @@ const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
+const Tags = require("../_sharedMethods/Tags.api");
 require("./Tournaments.background");
 
 App.ServerModule("Tournaments", function () {
   const Tournaments = this;
+  Tags.apply(Tournaments, [tournamentsModel]);
+
   const tournament_invite_processor = this.useModule("tournaments_invite_processor");
 
   Tournaments.add = (data, cb) => {

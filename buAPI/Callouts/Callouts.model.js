@@ -5,6 +5,8 @@ const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const immutable = true;
 const unique = true;
+const select = true;
+
 module.exports = model(
   "Callouts",
   Schema({
@@ -16,7 +18,7 @@ module.exports = model(
     court: { type: Schema.Types.ObjectId, required },
     invite_only: { type: Boolean, default: false },
     description: { type: String, default: "" },
-    tags: [String],
+    tags: { type: [String], select },
     //constants
     invitees: [{ type: Schema.Types.ObjectId, unique }],
     attendees: [{ type: Schema.Types.ObjectId, unique }],

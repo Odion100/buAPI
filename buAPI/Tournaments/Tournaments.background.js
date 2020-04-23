@@ -9,7 +9,7 @@ App.module("tournaments_invite_processor", function () {
 
     if (tournament) {
       if (tournament.status === "unpublished" || tournament.status === "published") {
-        tournament.teams.push(invite.target);
+        if (tournament.teams.indexOf(invite.target) === -1) tournament.teams.push(invite.target);
 
         tournament
           .save()

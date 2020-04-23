@@ -5,6 +5,8 @@ const constantsValidator = require("../_utils/constantsValidator");
 const required = true;
 const immutable = true;
 const unique = true;
+const select = false;
+
 module.exports = model(
   "Teams",
   Schema({
@@ -24,6 +26,7 @@ module.exports = model(
     //Constants
     members: [{ type: Schema.Types.ObjectId }],
     name: { type: String, required },
+    tags: { type: [String], select },
 
     //Non Constants
     temporary: { type: Boolean, default: false },
@@ -36,5 +39,5 @@ module.exports = model(
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)
-    .pre("findOneAndUpdate", constantsValidator(["members", "name"]))
+    .pre("findOneAndUpdate", constantsValidator(["members", "name", "tags"]))
 );
