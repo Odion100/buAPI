@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const moment = require("moment");
-const queryValidations = require("../_utils/queryValidator");
-const constantsValidator = require("../_utils/constantsValidator");
+const queryValidations = require("../_sharedValidators/queryValidator");
+const constantsValidator = require("../_sharedValidators/constantsValidator");
 const required = true;
 const immutable = true;
 
