@@ -41,7 +41,7 @@ App.ServerModule("GameState", function () {
 
       if (!team) return cb({ status: 404, message: "team_id does not match gameState" });
 
-      //add validations here
+      //validate active team and bench team
 
       gameState[`${team}_active_players`] = active_players;
       gameState[`${team}_bench_players`] = bench_players;
