@@ -20,11 +20,11 @@ require("./Games/Games.api");
 require("./Callouts/Callouts.api");
 
 App.startService({ route, port, useREST })
-  .on("init_complete", () => {
-    console.log("basketbal service ready");
-  })
+
   .loadService("Networking", {
     route: "bu/api/networking",
     port: 4000,
     host: "localhost",
-  });
+  })
+
+  .on("init_complete", () => process.send("ready"));

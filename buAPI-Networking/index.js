@@ -1,8 +1,8 @@
-require("./node_modules/dotenv").config();
+require("dotenv").config();
 const route = "bu/api/networking";
 const port = 4000;
 const useREST = true;
-const { App } = require("./node_modules/sht-tasks");
+const { App } = require("sht-tasks");
 const mongoose = require("mongoose");
 
 mongoose
@@ -16,6 +16,4 @@ mongoose
 require("./Invites/Invites.api");
 //require("./EventFeed/EventFeed.api");
 
-App.startService({ route, port, useREST }).on("init_complete", () => {
-  console.log("let then know you ready networking service");
-});
+App.startService({ route, port, useREST }).on("init_complete", () => process.send("ready"));
