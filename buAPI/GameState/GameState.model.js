@@ -9,25 +9,39 @@ const select = false;
 module.exports = model(
   "GameState",
   Schema({
-    //Immutables
     _id: Schema.Types.ObjectId,
-    game: { type: Schema.Types.ObjectId, required },
-    game_start_time: Date,
-    status: { type: String, enum: ["in play", "timeout", "ref-timeout", "completed"] },
-    quarter_start_time: Date,
-    quarter: Number,
-    timer: Number,
+    game: { type: Schema.Types.ObjectId, required, immutable },
+    team1: { type: Schema.Types.ObjectId, required, immutable },
+    team2: { type: Schema.Types.ObjectId, required, immutable },
+    clock_duration: { type: Number, required },
+    overtime_duration: { type: Number, required },
+    total_quarters: { type: Number, required },
+
+    game_start_time: { type: Date, default: moment().toJSON() },
+    gameplay_status: {
+      type: String,
+      enum: ["in play", "team-timeout", "refs-timeout", "game-timeout", "completed"],
+      default: "game-timeout",
+    },
+    current_quarter: { type: Number, default: 1 },
+    quarters: [
+      {
+        number: { type: Number, default: 1 },
+        start_time: { type: Date, required },
+        end_time: { type: Date, required },
+        timeout_duration: { type: Number, default: 0 },
+      },
+    ],
     timeouts_used: [
       {
         team: { type: Schema.Types.ObjectId, required },
         time: { type: Date, required },
         duration: Number,
+        quarter: Number,
       },
     ],
+
     //team 1
-    team1_id: { type: Schema.Types.ObjectId, required, immutable },
-    team1_points: { type: Number, default: 0 },
-    team1_rebounds: { type: Number, default: 0 },
     team1_points: { type: Number, default: 0 },
     team1_rebounds: { type: Number, default: 0 },
     team1_steals: { type: Number, default: 0 },
@@ -50,10 +64,8 @@ module.exports = model(
     ],
     team1_active_player: [Schema.Types.ObjectId],
     team1_bench_players: [Schema.Types.ObjectId],
+
     //team 2
-    team2_id: { type: Schema.Types.ObjectId, required, immutable },
-    team2_points: { type: Number, default: 0 },
-    team2_rebounds: { type: Number, default: 0 },
     team2_points: { type: Number, default: 0 },
     team2_rebounds: { type: Number, default: 0 },
     team2_steals: { type: Number, default: 0 },

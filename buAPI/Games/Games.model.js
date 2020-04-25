@@ -24,9 +24,9 @@ module.exports = model(
     tags: { type: [String], select },
     // constants by status
     team_size: { type: Number, max: 5 },
-    rounds: { type: Number, default: 1, min: 1, max: 4 },
-    clock: { type: Number, default: 0 },
-    overtime_clock: { type: Number, default: 0 },
+    total_quarters: { type: Number, default: 1, min: 1, max: 4 },
+    clock_duration: { type: Number, default: 0 },
+    overtime_duration: { type: Number, default: 0 },
     refs: { type: Boolean, default: false },
   })
     .pre("find", queryValidations)
