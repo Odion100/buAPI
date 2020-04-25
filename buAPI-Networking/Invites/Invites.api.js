@@ -1,8 +1,9 @@
-const { Service } = require("sht-tasks");
+const { App } = require("sht-tasks");
 const invitesModel = require("./Invites.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
-Service.ServerModule("Invites", function () {
+
+App.ServerModule("Invites", function () {
   const Invites = this;
 
   Invites.add = (data, cb) => {

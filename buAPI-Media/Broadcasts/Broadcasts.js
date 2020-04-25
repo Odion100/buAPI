@@ -1,6 +1,6 @@
-const { Service } = require("sht-tasks");
+const { Service } = require("./node_modules/sht-tasks");
 
-Service.ServerModule("Games", function() {
+Service.ServerModule("Games", function () {
   const Games = this;
 
   Games.get = (data, cb) => cb(null, { message: "You called Games.get method" });

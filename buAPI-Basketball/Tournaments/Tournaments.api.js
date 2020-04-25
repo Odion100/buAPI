@@ -2,7 +2,7 @@ const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
-const Tags = require("../_sharedMethods/Tags.api");
+const Tags = require("../../_sharedMethods/Tags.api");
 require("./Tournaments.background");
 
 App.ServerModule("Tournaments", function () {

@@ -2,7 +2,7 @@ const { App } = require("sht-tasks");
 const calloutsModel = require("./Callouts.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
-const Tags = require("../_sharedMethods/Tags.api");
+const Tags = require("../../_sharedMethods/Tags.api");
 
 App.ServerModule("Callouts", function () {
   const Callouts = this;
@@ -16,7 +16,6 @@ App.ServerModule("Callouts", function () {
       )
       .catch((error) => cb({ error, status: 400, message: "Failed to create new Callout" }));
   };
-
   Callouts.get = (
     { id, creator, created_date, date, court, invite_only, description, attendee, invitee, status },
     cb

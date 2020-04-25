@@ -2,7 +2,7 @@ const { App } = require("sht-tasks");
 const tournamentsModel = require("./Tournaments.model");
 
 App.module("tournaments_invite_processor", function () {
-  const { Invites } = this.useService("Utils");
+  const { Invites } = this.useService("Networking");
   const mod = this;
   Invites.on("invite_accepted:tournaments", async (invite) => {
     const tournament = await tournamentsModel.findById(invite.source);

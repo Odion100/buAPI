@@ -2,7 +2,7 @@ const { App } = require("sht-tasks");
 const teamsModel = require("./teams.model");
 const { Types } = require("mongoose");
 const moment = require("moment");
-const Tags = require("../_sharedMethods/Tags.api");
+const Tags = require("../../_sharedMethods/Tags.api");
 
 App.ServerModule("Teams", function () {
   const Teams = this;

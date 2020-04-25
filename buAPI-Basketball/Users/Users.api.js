@@ -1,7 +1,7 @@
 const { App } = require("sht-tasks");
 const usersModel = require("./Users.model");
 const { Types } = require("mongoose");
-const Tags = require("../_sharedMethods/Tags.api");
+const Tags = require("../../_sharedMethods/Tags.api");
 App.ServerModule("Users", function () {
   const Users = this;
   Tags.apply(this, [usersModel]);
