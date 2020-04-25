@@ -60,7 +60,10 @@ App.ServerModule("Games", function () {
         status: 400,
       });
 
-    gamesModel.find({ $and: queries }).then((games) => cb(null, { games, status: 200 }));
+    gamesModel
+      .find({ $and: queries })
+      .then((games) => cb(null, { games, status: 200 }))
+      .catch((error) => cb(error));
   };
 
   Games.updateFields = async ({ id, fields }, cb) => {
