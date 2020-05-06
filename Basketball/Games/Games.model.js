@@ -23,7 +23,7 @@ module.exports = model(
     },
     tags: { type: [String], select },
     // constants by status
-    team_size: { type: Number, max: 5 },
+    team_size: { type: Number, max: 5, required },
     total_quarters: { type: Number, default: 1, min: 1, max: 4 },
     clock_duration: { type: Number, default: 0 },
     overtime_duration: { type: Number, default: 0 },

@@ -10,5 +10,10 @@ module.exports = {
       watch: true,
       wait_ready: true,
     },
+    {
+      script: "GameData",
+      watch: true,
+      wait_ready: true,
+    },
   ],
 };

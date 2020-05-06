@@ -1,34 +1,50 @@
 const { Schema, model } = require("mongoose");
 const moment = require("moment");
-const queryValidations = require("../_utils/queryValidator");
+const queryValidations = require("../../_sharedValidators/queryValidator");
 const required = true;
 const immutable = true;
 const unique = true;
 const select = false;
-
+const validate = {
+  validator: function (value) {
+    return value.length >= this.team_size;
+  },
+  message: "Team size is too small",
+};
 module.exports = model(
   "GameState",
   Schema({
     _id: Schema.Types.ObjectId,
-    game: { type: Schema.Types.ObjectId, required, immutable },
+    // game: { type: Schema.Types.ObjectId, required, immutable },
     team1: { type: Schema.Types.ObjectId, required, immutable },
     team2: { type: Schema.Types.ObjectId, required, immutable },
-    clock_duration: { type: Number, required },
-    overtime_duration: { type: Number, required },
-    total_quarters: { type: Number, required },
+    team1_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
+    team2_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
+    team_size: { type: Number, required, immutable },
+    clock_duration: { type: Number, required, immutable },
+    overtime_duration: { type: Number, required, immutable },
+    total_quarters: { type: Number, required, immutable },
 
-    game_start_time: { type: Date, default: moment().toJSON() },
+    game_start_time: { type: Date, default: moment().toJSON(), immutable },
+    gameplay_clock: { type: Number, default: 0 },
     gameplay_status: {
       type: String,
-      enum: ["in play", "team-timeout", "refs-timeout", "game-timeout", "completed"],
-      default: "game-timeout",
+      enum: [
+        "in play",
+        "team-timeout",
+        "refs-timeout",
+        "game-timeout",
+        "completed",
+        "intermission",
+      ],
+      default: "intermission",
     },
-    current_quarter: { type: Number, default: 1 },
+    current_quarter: { type: Number, default: 0 },
     quarters: [
       {
-        number: { type: Number, default: 1 },
-        start_time: { type: Date, required },
-        end_time: { type: Date, required },
+        number: { type: Number, required },
+        start_time: { type: Date, required, default: moment().toJSON() },
+        end_time: { type: Date },
         timeout_duration: { type: Number, default: 0 },
       },
     ],
@@ -40,7 +56,10 @@ module.exports = model(
         quarter: Number,
       },
     ],
+    team1_timeouts_remaining: { type: Number, default: 0 },
+    team2_timeouts_remaining: { type: Number, default: 0 },
 
+    //GAME PLAY STATS
     //team 1
     team1_points: { type: Number, default: 0 },
     team1_rebounds: { type: Number, default: 0 },
@@ -49,7 +68,6 @@ module.exports = model(
     team1_turnovers: { type: Number, default: 0 },
     team1_assists: { type: Number, default: 0 },
     team1_fouls: { type: Number, default: 0 },
-    team1_timeouts_remaining: Number,
     team1_player_stats: [
       {
         player: { type: Schema.Types.ObjectId, required },
@@ -73,7 +91,6 @@ module.exports = model(
     team2_turnovers: { type: Number, default: 0 },
     team2_assists: { type: Number, default: 0 },
     team2_fouls: { type: Number, default: 0 },
-    team2_timeouts_remaining: Number,
     team2_player_stats: [
       {
         player: { type: Schema.Types.ObjectId, required },

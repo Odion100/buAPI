@@ -21,7 +21,7 @@
     "dotenv": "^8.2.0",
     "moment": "^2.24.0",
     "mongoose": "^5.9.4",
-    "sht-tasks": "^2.1.7"
+    "sht-tasks": "^2.1.8"
   },
   "devDependencies": {
     "chai": "^4.2.0"

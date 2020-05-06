@@ -9,7 +9,7 @@ App.ServerModule("Teams", function () {
   Tags.apply(Teams, [teamsModel]);
 
   Teams.add = (data, cb) => {
-    new teamsModel({ _id: Types.ObjectId(), ...data })
+    new teamsModel({ _id: Types.ObjectId(), ...data, players: [data.root_admin] })
       .save()
       .then((newTeam) =>
         cb(null, { newTeam, status: 200, message: "New team created successfully." })
@@ -20,6 +20,7 @@ App.ServerModule("Teams", function () {
   Teams.get = (
     {
       id,
+      ids,
       name,
       root_admin,
       created_date,
@@ -35,6 +36,10 @@ App.ServerModule("Teams", function () {
     const queries = [];
     if (id) queries.push({ _id: id });
     else {
+      if (ids) {
+        ids = typeof ids === "string" ? ids.join(",") : ids;
+        queries.push({ _id: { $in: ids } });
+      }
       if (root_admin) queries.push({ root_admin });
       if (secondary_admin) queries.push({ secondary_admins: secondary_admin });
       if (zipcode) queries.push({ primary_zipcodes: zipcode });
@@ -51,7 +56,7 @@ App.ServerModule("Teams", function () {
 
       if (name) queries.push({ name: { $regex: new RegExp(`\\b${name}`, "gi") } });
     }
-    //console.log(queries);
+    console.log(queries, ids);
     if (queries.length === 0)
       return cb(null, {
         message: "Invalid request options",

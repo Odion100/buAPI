@@ -24,7 +24,7 @@ module.exports = model(
     created_date: { type: Date, default: moment().toJSON(), immutable },
 
     //Constants
-    members: [{ type: Schema.Types.ObjectId }],
+    players: [{ type: Schema.Types.ObjectId }],
     name: { type: String, required },
     tags: { type: [String], select },
 
