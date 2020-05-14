@@ -9,7 +9,6 @@ App.ServerModule("GameState", function () {
   const { Teams } = this.useService("Basketball");
 
   GameState.initialize = async (game, cb) => {
-    //console.log(game);
     if (!game.team1 || !game.team2)
       return cb({
         message: "Invalid Options: team1 and team2 or required options",
@@ -18,6 +17,7 @@ App.ServerModule("GameState", function () {
 
     try {
       const { teams } = await Teams.get({ ids: [game.team1, game.team2] });
+
       const t1 = teams.find((team) => team._id === game.team1);
       if (!t1) return cb({ message: `Invalid Team1 id: ${game.team1}` });
       const t2 = teams.find((team) => team._id === game.team2);
@@ -38,7 +38,6 @@ App.ServerModule("GameState", function () {
         )
         .catch((error) => cb({ error, status: 400, message: "Failed to create new GameState" }));
     } catch (error) {
-      console.log(error);
       cb(error);
     }
   };

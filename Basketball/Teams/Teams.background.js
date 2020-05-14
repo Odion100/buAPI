@@ -19,7 +19,7 @@ App.module("teams_invite_processor", function () {
           .catch((error) => console.error(error));
       }
     } else {
-      console.log("team not found");
+      console.error("team not found");
     }
   });
 });

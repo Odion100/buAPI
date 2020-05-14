@@ -17,7 +17,6 @@ module.exports = function (next) {
       if (query._id)
         if (query._id.$in) {
           for (let i = 0; i < query._id.$in.length; i++) {
-            console.log("_id:", query._id.$in[i]);
             if (!isValidObjectId(query._id.$in[i])) {
               return next({ message: "Invaild id type:", status: 400 });
             } else break;

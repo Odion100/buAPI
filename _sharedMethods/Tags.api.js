@@ -13,7 +13,6 @@ module.exports = function (model) {
       await dbObject.save();
       cb(null, { status: 200, updated: true });
     } catch (error) {
-      console.log(error);
       cb(error);
     }
   };
