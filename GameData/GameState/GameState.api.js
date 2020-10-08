@@ -25,12 +25,16 @@ App.ServerModule("GameState", function () {
 
       const team1_roster = t1.players;
       const team2_roster = t2.players;
+      const team1_bench = t1.players;
+      const team2_bench = t2.players;
 
       new gameStateModel({
         _id: Types.ObjectId(),
         ...game,
         team1_roster,
         team2_roster,
+        team1_bench,
+        team2_bench,
       })
         .save()
         .then((newGameState) =>
@@ -59,32 +63,42 @@ App.ServerModule("GameState", function () {
       .catch((error) => cb(error));
   };
 
-  GameState.updatePlayers = async ({ id, team_id, active_players, bench_players }, cb) => {
+  GameState.changeLineup = async ({ id, team_id, remove_player, insert_player }, cb) => {
+    team_id;
     try {
       const gameState = await gameStateModel.findById(id);
+      console.log("gameState", gameState);
       if (!gameState) return cb({ status: 404, message: "GameState not found" });
       const team =
         team_id === gameState.team1 ? "team1" : team_id === gameState.team2 ? "team2" : null;
-
+      console.log(
+        "team",
+        team,
+        team_id,
+        gameState.team1,
+        typeof Types.ObjectId(team_id) === typeof gameState.team1
+      );
       if (!team)
         return cb({
           status: 404,
-          message: "team_id does not match the teams assigned to this game",
+          message: "team_id does not match the teams in this game",
         });
 
-      //validate active team and bench team
-      if (active_players.length + bench_players.length !== gameState[`${team}_roster`].length)
-        return cb({ status: 404, message: "that data sent does not match the teams roster" });
+      //remove active player if all active_player slots are filled
+      if (gameState[`${team}_active_players`].length === gameState.team_size) {
+        const i = gameState[`${team}_active_players`].indexOf(remove_player);
+        if (i > -1) gameState[`${team}_active_players`].splice(i, 1);
+        else
+          return cb({
+            message: "Invalid options:active_player not found in the game",
+            status: 404,
+          });
+      }
 
-      if (
-        ![...active_players, ...bench_players].every(
-          (player) => gameState[`${team}_roster`].indexOf(player) > -1
-        )
-      )
-        return cb({ status: 404, message: "The data sent does not match the teams roster" });
+      if (gameState[`${team}_roster`].indexOf(insert_player) === -1)
+        gameState[`${team}_active_players`].push(insert_player);
+      else return cb({ message: "Invalid Options: player not found on team roster" });
 
-      gameState[`${team}_active_players`] = active_players;
-      gameState[`${team}_bench_players`] = bench_players;
       gameState
         .save()
         .then((updatedGameState) => cb(null, { updatedGameState, status: 200 }))

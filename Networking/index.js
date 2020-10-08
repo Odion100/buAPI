@@ -17,4 +17,6 @@ mongoose
 require("./Invites/Invites.api");
 //require("./EventFeed/EventFeed.api");
 
-App.startService({ route, port, useREST }).on("init_complete", () => process.send("ready"));
+App.startService({ route, port, useREST }).on("init_complete", () => {
+  if (typeof process.send === "fuction") process.send("ready");
+});

@@ -80,8 +80,7 @@ module.exports = model(
         fouls: { type: Number, default: 0 },
       },
     ],
-    team1_active_player: [Schema.Types.ObjectId],
-    team1_bench_players: [Schema.Types.ObjectId],
+    team1_active_players: [Schema.Types.ObjectId],
 
     //team 2
     team2_points: { type: Number, default: 0 },
@@ -103,8 +102,7 @@ module.exports = model(
         fouls: { type: Number, default: 0 },
       },
     ],
-    team2_active_player: [Schema.Types.ObjectId],
-    team2_bench_players: [Schema.Types.ObjectId],
+    team2_active_players: [Schema.Types.ObjectId],
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)

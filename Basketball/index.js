@@ -27,4 +27,6 @@ App.startService({ route, port, useREST })
     host: "localhost",
   })
 
-  .on("init_complete", () => process.send("ready"));
+  .on("init_complete", () => {
+    if (typeof process.send === "function") process.send("ready");
+  });

@@ -15,6 +15,7 @@ module.exports = model(
     team1: { type: Schema.Types.ObjectId, required, immutable },
     team2: { type: Schema.Types.ObjectId, required, immutable },
     court: { type: Schema.Types.ObjectId, required, immutable },
+    team_size: { type: Number, max: 5, required },
     //constants
     status: {
       type: String,
@@ -23,7 +24,6 @@ module.exports = model(
     },
     tags: { type: [String], select },
     // constants by status
-    team_size: { type: Number, max: 5, required },
     total_quarters: { type: Number, default: 1, min: 1, max: 4 },
     clock_duration: { type: Number, default: 0 },
     overtime_duration: { type: Number, default: 0 },
