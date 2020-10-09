@@ -20,7 +20,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.9.4",
+    "mongoose": "^5.10.9",
     "sht-tasks": "^2.2.8"
   },
   "devDependencies": {
