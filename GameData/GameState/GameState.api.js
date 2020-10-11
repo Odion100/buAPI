@@ -25,16 +25,12 @@ App.ServerModule("GameState", function () {
 
       const team1_roster = t1.players;
       const team2_roster = t2.players;
-      const team1_bench = t1.players;
-      const team2_bench = t2.players;
 
       new gameStateModel({
         _id: Types.ObjectId(),
         ...game,
         team1_roster,
         team2_roster,
-        team1_bench,
-        team2_bench,
       })
         .save()
         .then((newGameState) =>
@@ -63,8 +59,7 @@ App.ServerModule("GameState", function () {
       .catch((error) => cb(error));
   };
 
-  GameState.changeLineup = async ({ id, team_id, remove_player, insert_player }, cb) => {
-    team_id;
+  GameState.changeLineup = async ({ id, team_id, remove_players, insert_players }, cb) => {
     try {
       const gameState = await gameStateModel.findById(id);
       console.log("gameState", gameState);
@@ -76,7 +71,7 @@ App.ServerModule("GameState", function () {
         team,
         team_id,
         gameState.team1,
-        typeof Types.ObjectId(team_id) === typeof gameState.team1
+        Types.ObjectId(team_id) === gameState.team1
       );
       if (!team)
         return cb({
@@ -85,18 +80,19 @@ App.ServerModule("GameState", function () {
         });
 
       //remove active player if all active_player slots are filled
-      if (gameState[`${team}_active_players`].length === gameState.team_size) {
-        const i = gameState[`${team}_active_players`].indexOf(remove_player);
+      for (let n = 0; n < remove_players.length; n++) {
+        const player = remove_players[n];
+        const i = gameState[`${team}_active_players`].indexOf(player);
         if (i > -1) gameState[`${team}_active_players`].splice(i, 1);
         else
           return cb({
-            message: "Invalid options:active_player not found in the game",
+            message: `Invalid options for remove_players (${player}):player not found in the game`,
             status: 404,
           });
       }
 
-      if (gameState[`${team}_roster`].indexOf(insert_player) === -1)
-        gameState[`${team}_active_players`].push(insert_player);
+      if (gameState[`${team}_roster`].indexOf(insert_players) === -1)
+        gameState[`${team}_active_players`].push(insert_players);
       else return cb({ message: "Invalid Options: player not found on team roster" });
 
       gameState
