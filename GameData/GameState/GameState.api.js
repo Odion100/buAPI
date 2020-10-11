@@ -59,20 +59,23 @@ App.ServerModule("GameState", function () {
       .catch((error) => cb(error));
   };
 
-  GameState.changeLineup = async ({ id, team_id, remove_players, insert_players }, cb) => {
+  GameState.changeLineup = async ({ id, team_id, remove_players = [], insert_players }, cb) => {
     try {
+      if (!Array.isArray(insert_players))
+        return cb({
+          message: "Invalid Option type:insert_players & remove_players requires an array",
+          status: 404,
+        });
+      if (insert_players.length === 0)
+        cb({
+          message:
+            "Invalid Option: insert_player requires an array with a length greater than zero",
+        });
+
       const gameState = await gameStateModel.findById(id);
-      console.log("gameState", gameState);
       if (!gameState) return cb({ status: 404, message: "GameState not found" });
-      const team =
-        team_id === gameState.team1 ? "team1" : team_id === gameState.team2 ? "team2" : null;
-      console.log(
-        "team",
-        team,
-        team_id,
-        gameState.team1,
-        Types.ObjectId(team_id) === gameState.team1
-      );
+      let team = team_id == gameState.team1 ? "team1" : team_id == gameState.team2 ? "team2" : null;
+      //console.log(team)
       if (!team)
         return cb({
           status: 404,
@@ -80,6 +83,13 @@ App.ServerModule("GameState", function () {
         });
 
       //remove active player if all active_player slots are filled
+      if (remove_players.length > gameState[`${team}_active_players`].length)
+        return cb({
+          message:
+            "Invalid Options: remove_player.length is greater than the team's active_players",
+          status: 404,
+        });
+
       for (let n = 0; n < remove_players.length; n++) {
         const player = remove_players[n];
         const i = gameState[`${team}_active_players`].indexOf(player);
@@ -91,9 +101,26 @@ App.ServerModule("GameState", function () {
           });
       }
 
-      if (gameState[`${team}_roster`].indexOf(insert_players) === -1)
-        gameState[`${team}_active_players`].push(insert_players);
-      else return cb({ message: "Invalid Options: player not found on team roster" });
+      if (insert_players.length > gameState.team_size - gameState[`${team}_active_players`].length)
+        return cb({
+          message:
+            "Invalid Options: insert_players.length is greater than team_size minus active_players",
+          status: 404,
+        });
+
+      for (let i = 0; i < insert_players.length; i++) {
+        const player = insert_players[i];
+
+        if (gameState[`${team}_roster`].indexOf(Types.ObjectId(player)) === -1)
+          return cb({ message: "Invalid Options: player not found on team roster", status: 404 });
+
+        if (gameState[`${team}_active_players`].indexOf(player) > -1)
+          return cb({
+            message: `Invalid Option: Unable to insert already active player: ${player}`,
+          });
+
+        gameState[`${team}_active_players`].push(player);
+      }
 
       gameState
         .save()
