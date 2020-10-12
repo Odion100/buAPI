@@ -132,18 +132,17 @@ App.ServerModule("GameState", function () {
   };
 
   GameState.startPlay = async ({ id }, cb) => {
-    //check the active players
     try {
       const gameState = await gameStateModel.findById(id);
       if (!gameState) return cb({ status: 404, message: "GameState not found" });
 
-      if (gameState.team1_active_players.length !== gameState.team_size)
+      if (gameState.team1_active_players.length != gameState.team_size)
         return cb({
           status: 403,
           message: "Team1 active players do not match the designated team size",
         });
 
-      if (gameState.team2_active_players.length !== gameState.team_size)
+      if (gameState.team2_active_players.length != gameState.team_size)
         return cb({
           status: 403,
           message: "Team2 active players do not match the designated team size",
@@ -158,7 +157,6 @@ App.ServerModule("GameState", function () {
         case "refs-timeout":
         case "game-timeout":
           break;
-
         case "intermission":
           gameState.current_quarter++;
           gameState.quarters.push({ number: gameState.current_quarter });
@@ -188,7 +186,7 @@ App.ServerModule("GameState", function () {
     //update game state
   };
 
-  GameState.pause = (data, cb) => {};
+  GameState.pausePlay = (data, cb) => {};
 
   GameState.endGame = (data, cb) => {
     //when the game is ended fire an event
