@@ -12,8 +12,8 @@ module.exports = model(
     _id: Schema.Types.ObjectId,
     creator: { type: Schema.Types.ObjectId, required, immutable },
     created_date: { type: Date, default: moment().toJSON(), immutable },
-    team1: { type: Schema.Types.ObjectId, required, immutable },
-    team2: { type: Schema.Types.ObjectId, required, immutable },
+    team1_id: { type: Schema.Types.ObjectId, required, immutable },
+    team2_id: { type: Schema.Types.ObjectId, required, immutable },
     court: { type: Schema.Types.ObjectId, required, immutable },
     team_size: { type: Number, max: 5, required },
     //constants
@@ -27,6 +27,7 @@ module.exports = model(
     total_quarters: { type: Number, default: 1, min: 1, max: 4 },
     clock_duration: { type: Number, default: 0 },
     overtime_duration: { type: Number, default: 0 },
+    timeouts_per_quarter: { type: Number, default: 0 },
     refs: { type: Boolean, default: false },
   })
     .pre("find", queryValidations)
