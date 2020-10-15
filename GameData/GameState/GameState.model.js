@@ -15,16 +15,14 @@ module.exports = model(
   "GameState",
   Schema({
     _id: Schema.Types.ObjectId,
-    // game: { type: Schema.Types.ObjectId, required, immutable },
-    team1: { type: Schema.Types.ObjectId, required, immutable },
-    team2: { type: Schema.Types.ObjectId, required, immutable },
-    team1_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
-    team2_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
+    //Game Settings
     team_size: { type: Number, required, immutable },
     clock_duration: { type: Number, required, immutable },
     overtime_duration: { type: Number, required, immutable },
     total_quarters: { type: Number, required, immutable },
+    timeouts_per_quarter: { type: Number, required },
 
+    //Live game status
     game_start_time: { type: Date, default: moment().toJSON(), immutable },
     gameplay_clock: { type: Number, default: 0 },
     gameplay_status: {
@@ -48,61 +46,69 @@ module.exports = model(
         timeout_duration: { type: Number, default: 0 },
       },
     ],
-    timeouts_used: [
-      {
-        team: { type: Schema.Types.ObjectId, required },
-        time: { type: Date, required },
-        duration: Number,
-        quarter: Number,
-      },
-    ],
-    team1_timeouts_remaining: { type: Number, default: 0 },
-    team2_timeouts_remaining: { type: Number, default: 0 },
 
-    //GAME PLAY STATS
-    //team 1
-    team1_points: { type: Number, default: 0 },
-    team1_rebounds: { type: Number, default: 0 },
-    team1_steals: { type: Number, default: 0 },
-    team1_blocks: { type: Number, default: 0 },
-    team1_turnovers: { type: Number, default: 0 },
-    team1_assists: { type: Number, default: 0 },
-    team1_fouls: { type: Number, default: 0 },
-    team1_player_stats: [
-      {
-        player: { type: Schema.Types.ObjectId, required },
-        points: { type: Number, default: 0 },
-        rebounds: { type: Number, default: 0 },
-        steals: { type: Number, default: 0 },
-        blocks: { type: Number, default: 0 },
-        turnovers: { type: Number, default: 0 },
-        assists: { type: Number, default: 0 },
-        fouls: { type: Number, default: 0 },
-      },
-    ],
+    //team 1 GAME PLAY STATE
+    team1_id: { type: Schema.Types.ObjectId, required, immutable },
+    team1_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
     team1_active_players: [Schema.Types.ObjectId],
-
-    //team 2
-    team2_points: { type: Number, default: 0 },
-    team2_rebounds: { type: Number, default: 0 },
-    team2_steals: { type: Number, default: 0 },
-    team2_blocks: { type: Number, default: 0 },
-    team2_turnovers: { type: Number, default: 0 },
-    team2_assists: { type: Number, default: 0 },
-    team2_fouls: { type: Number, default: 0 },
-    team2_player_stats: [
+    team1_timeouts_used: [{ quarter: { type: Number, required }, clock: { type: Date, required } }],
+    //STATS
+    team1_rebounds: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_steals: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_blocks: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_turnovers: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_assists: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_fouls: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team1_points: [
       {
         player: { type: Schema.Types.ObjectId, required },
-        points: { type: Number, default: 0 },
-        rebounds: { type: Number, default: 0 },
-        steals: { type: Number, default: 0 },
-        blocks: { type: Number, default: 0 },
-        turnovers: { type: Number, default: 0 },
-        assists: { type: Number, default: 0 },
-        fouls: { type: Number, default: 0 },
+        points: { type: Number, required },
+        date: { type: Date, required },
       },
     ],
+    //team 2 GAME PLAY STATE
+    team2_id: { type: Schema.Types.ObjectId, required, immutable },
+    team2_roster: { type: [Schema.Types.ObjectId], validate, required, immutable },
     team2_active_players: [Schema.Types.ObjectId],
+    team2_timeouts_used: [{ quarter: { type: Number, required }, date: { type: Date, required } }],
+    //STATS
+    team2_rebounds: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_steals: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_blocks: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_turnovers: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_assists: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_fouls: [
+      { player: { type: Schema.Types.ObjectId, required }, date: { type: Date, required } },
+    ],
+    team2_points: [
+      {
+        player: { type: Schema.Types.ObjectId, required },
+        amount: { type: Number, required },
+        date: { type: Date, required },
+      },
+    ],
   })
     .pre("find", queryValidations)
     .pre("findOne", queryValidations)

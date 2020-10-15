@@ -9,19 +9,19 @@ App.ServerModule("GameState", function () {
   const { Teams } = this.useService("Basketball");
 
   GameState.initialize = async (game, cb) => {
-    if (!game.team1 || !game.team2)
+    if (!game.team1_id || !game.team2_id)
       return cb({
         message: "Invalid Options: team1 and team2 or required options",
         status: 404,
       });
 
     try {
-      const { teams } = await Teams.get({ ids: [game.team1, game.team2] });
+      const { teams } = await Teams.get({ ids: [game.team1_id, game.team2_id] });
 
-      const t1 = teams.find((team) => team._id === game.team1);
-      if (!t1) return cb({ message: `Invalid Team1 id: ${game.team1}` });
-      const t2 = teams.find((team) => team._id === game.team2);
-      if (!t2) return cb({ message: `Invalid Team2 id: ${game.team2}` });
+      const t1 = teams.find((team) => team._id === game.team1_id);
+      if (!t1) return cb({ message: `Invalid Team1 id: ${game.team1_id}` });
+      const t2 = teams.find((team) => team._id === game.team2_id);
+      if (!t2) return cb({ message: `Invalid Team2 id: ${game.team2_id}` });
 
       const team1_roster = t1.players;
       const team2_roster = t2.players;
@@ -74,7 +74,8 @@ App.ServerModule("GameState", function () {
 
       const gameState = await gameStateModel.findById(id);
       if (!gameState) return cb({ status: 404, message: "GameState not found" });
-      let team = team_id == gameState.team1 ? "team1" : team_id == gameState.team2 ? "team2" : null;
+      let team =
+        team_id == gameState.team1_id ? "team1" : team_id == gameState.team2_id ? "team2" : null;
       //console.log(team)
       if (!team)
         return cb({
